@@ -1,0 +1,47 @@
+
+- unless calendar_agenda.agenda_grouped_events.empty?
+  .agenda
+    - calendar_agenda.agenda_grouped_events.keys.sort.each do |date|
+      .row_head class=Candle::AgendaModel.emphasize_date(date, Date.today, 'today', 'not_today') = l(date, format: '%A, %e. %B %Y')
+      - calendar_agenda.agenda_grouped_events[date].each do |event|
+
+        .event_shell
+          .open_more data-id=""
+            .event
+              - if event.dtstart.instance_of?(DateTime)
+                span.time = event.dtstart.localtime.strftime('%k:%M')
+              - else
+                span.time &#9654;
+              span.flex_wrap_it.breakable.summary{ title = Candle::AgendaModel.summary_title(event) } == event.summary.to_s.force_encoding("UTF-8")
+              i class="material-icons auto_margin_left" arrow_drop_down
+
+          .details style="display: none;"
+            .timeframe title="Zeitraum"
+              .text
+                span.icon
+                  i class="material-icons" date_range
+                span.content
+                  - if event.dtstart.instance_of?(DateTime)
+                    = l(event.dtstart.localtime, format: :short) + " - " + l(event.dtend.localtime, format: :hnh_short)
+                  - else
+                    = l(event.dtstart, format: :short) + " - " + l((event.dtend - 1.day), format: :short)
+
+            - if !event.location.to_s.strip.empty?
+              .location title="Adresse"
+                .text
+                  span.icon
+                    i class="material-icons" location_on
+                  span.content
+                    a href=calendar_agenda.address_to_maps_path(event.location.to_s) target="_blank"
+                      .flex_wrap_it.breakable = event.location.to_s.force_encoding("UTF-8")
+
+            - if !event.description.to_s.strip.empty?
+            .description title="Weitere Beschreibung"
+              .text
+                span.icon
+                  i class="material-icons" description
+                span.content
+                  .flex_wrap_it.breakable = auto_link(event.description.to_s.force_encoding("UTF-8"), html: { target: '_blank' })
+
+- else
+  p No upcoming events in the next week.

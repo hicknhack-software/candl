@@ -1,0 +1,4 @@
+de:  
+  time:
+    formats:
+      hnh_short: "%R Uhr"

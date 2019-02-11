@@ -1,0 +1,54 @@
+
+- events_error_free = true
+- is_month = params[:v] != 'a'
+- current_shift_factor = params[:s] || 0
+- date_today = Date.today
+- update_interval = config[:general][:cache_update_interval_in_s]
+
+- if is_month
+  - begin
+    - month = Rails.cache.fetch("#month/#{current_shift_factor}/#{date_today}", expires_in: update_interval) do
+      - Candle::MonthModel.new(config, current_shift_factor, date_today)
+  - rescue => exception
+    - events_error_free = false
+- else
+  - begin
+    - agenda = Rails.cache.fetch("#agenda/#{current_shift_factor}/#{date_today}", expires_in: update_interval) do
+      - Candle::AgendaModel.new(config, current_shift_factor, date_today)
+  - rescue => exception
+    - events_error_free = false
+
+- if events_error_free
+  - model = (is_month ? month : agenda)
+
+
+  .popover_backdrop.init_display_none
+
+  div
+    .button_holder
+      .btn-group
+        = link_to "Monat", model.path("", v: :m, s: model.current_shift_for_month(current_shift_factor)), class: "btn btn-default button_item #{'active' if is_month}"
+
+        = link_to "Agenda", model.path("", v: :a, s: model.current_shift_for_agenda(current_shift_factor)), class: "btn btn-default button_item #{'active' unless is_month}"
+
+      .btn-group
+        = link_to "Heute", model.path(""), class: "btn btn-default button_item"
+
+      .btn-group
+        = link_to model.previous_path("", current_shift_factor), class: "btn btn-default button_item debounce_this", data: { debounce_param: "s", direction_forward: false }
+          .button_icon
+            i.material-icons navigate_before
+
+        = link_to model.upcoming_path("", current_shift_factor), class: "btn btn-default button_item debounce_this", data: { debounce_param: "s", direction_forward: true }
+          .button_icon
+            i.material-icons navigate_next
+
+    .calendar
+      - if is_month
+        = render partial: "candle/calendar/month", locals: { calendar_month: model }
+      - else
+        = render partial: "candle/calendar/agenda", locals: { calendar_agenda: model }
+
+- else
+  .error_message Der Kalender kann wegen einer kurzzeitigen technischen Störung gerade nicht angezeigt werden. Bitte versuchen sie es in einer Weile noch einmal.
+

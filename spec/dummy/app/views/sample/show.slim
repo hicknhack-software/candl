@@ -1,0 +1,24 @@
+div You should see the calendar rendered below:
+
+- config = { \
+    calendar: { \
+      google_calendar_api_host_base_path: "https://www.googleapis.com/calendar/v3/calendars/", \
+      calendar_id: "schau-hnh%40web.de", \
+      api_key: "AIzaSyB5F1X5hBi8vPsmt1itZTpMluUAjytf6hI" \
+    }, \
+    agenda: { \
+      display_day_count: 14, \
+      days_shift_coefficient: 7 \
+    }, \
+    month: { \
+      summary_teaser_length_in_characters: 42, \
+      delta_start_of_weekday_from_sunday: 1 \
+    }, \
+    general: { \
+      maps_query_host: "https://www.google.de/maps", \
+      maps_query_parameter: "q", \
+      cache_update_interval_in_s: 7200 \
+    } \
+  }
+
+= render partial: 'candle/calendar/frame', locals: { config: config }

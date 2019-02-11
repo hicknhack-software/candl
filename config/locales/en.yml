@@ -1,0 +1,4 @@
+en:  
+  time:
+    formats:
+      hnh_short: "%l:%M %P"
