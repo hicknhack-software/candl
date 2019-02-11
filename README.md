@@ -33,7 +33,6 @@ config = {
 }
 ````
 
-- It would be possible to leave out either the agenda or month node if you only need the functionality of the other one.
 - The node "calendar" holds all relevant information to the chosen calendar that you want to load events from.
 - Under "general" there is the "maps_query_host" wich is the base url to a map service (like google maps in this example) and the "maps_query_parameter". (Maybe in the future there will be more map services, that let one search for a location just via the url and a parameter. But for now i only found gmaps to be able to do this. Like: https://www.google.de/maps/?q=Dresden+Hauptbahnhof)
 - In "agenda" you can set the span "display_day_count" of day's considered/loaded in one view and by how many day's it will be shifted "days_shift_coefficient".
