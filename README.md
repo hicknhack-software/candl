@@ -1,6 +1,6 @@
 # Candle
 
-This gem helps load and display a calendar from google calendar in an agenda or month wise style view.
+This gem helps load and display a calendar from google calendar in an agenda or month style view.
 
 ## Usage
 
