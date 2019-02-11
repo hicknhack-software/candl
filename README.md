@@ -6,11 +6,13 @@ This gem helps load and display a calendar from google calendar in an agenda or 
 
 The gem consists of mainly three models. One - the event loader model - is focusing on loading the events from the google server via a restfull api and an api key. The other two are the agenda and month model wich offer functionality to organize the data for an agenda or month view. Next to the models are the views wich come with a "_frame.slim" view. This view can be included in a host view as a partial. This way one can display a calendar inside of another page. The "_frame.slim" is the entry point that prepares the model and view for the respective view type (month/agenda). (It does not come with a seperate week view.)
 
+Find an example inclusion of the _frame.slim partial in the show.slim file in candle/spec/dummy/app/views/sample/show.slim.
+
 The main steps to use this gem are:
-- Initialize an agenda or month model object with a json config that specifies these values:
+- Initialize an agenda or month model object with a config that specifies these values:
 
 ````
-{
+config = {
   "calendar": {
     "google_calendar_api_host_base_path": "https://www.googleapis.com/calendar/v3/calendars/",
     "calendar_id": "schau-hnh%40web.de",
