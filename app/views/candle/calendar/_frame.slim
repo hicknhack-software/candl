@@ -11,12 +11,18 @@
       - Candle::MonthModel.new(config, current_shift_factor, date_today)
   - rescue => exception
     - events_error_free = false
+    - puts "ERROR - GOT EXCEPTION:"
+    - puts exception
+    / Maybe there is a beter way to signal the exception?
 - else
   - begin
     - agenda = Rails.cache.fetch("#agenda/#{current_shift_factor}/#{date_today}", expires_in: update_interval) do
       - Candle::AgendaModel.new(config, current_shift_factor, date_today)
   - rescue => exception
     - events_error_free = false
+    - puts "ERROR - GOT EXCEPTION:"
+    - puts exception
+    / Maybe there is a beter way to signal the exception?
 
 - if events_error_free
   - model = (is_month ? month : agenda)
@@ -50,5 +56,5 @@
         = render partial: "candle/calendar/agenda", locals: { calendar_agenda: model }
 
 - else
-  .error_message Der Kalender kann wegen einer kurzzeitigen technischen Störung gerade nicht angezeigt werden. Bitte versuchen sie es in einer Weile noch einmal.
+  .error_message Der Kalender kann wegen einer kurzzeitigen technischen Störung gerade nicht angezeigt werden. Bitte versuchen Sie es in einer Weile noch einmal.
 
