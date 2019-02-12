@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'sass', '~> 3.7', '>= 3.7.0'
   s.add_dependency 'jquery-rails', '~> 4.3', '>= 4.3.0'
   s.add_dependency 'turbolinks', '~> 5.2', '>= 5.2.0'
-  s.add_dependency 'bootstrap-sass', '~> 3.4', '>= 3.4.0'
+  s.add_dependency 'bootstrap-sass', '~> 3.3', '>= 3.3.7'
   s.add_dependency 'rails_autolink', '~> 1.1', '>= 1.1.0'
   s.add_dependency 'coffee-rails', '~> 4.2', '>= 4.2.0'
 
