@@ -5,7 +5,7 @@ require "candle/version"
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
-  s.name        = "candle"
+  s.name        = "candl"
   s.version     = Candle::VERSION
   s.authors     = ["Andreas Schau"]
   s.email       = ["andreas.schau@hicknhack-software.com"]
@@ -17,17 +17,17 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["spec/**/*"]
 
-  s.add_dependency "rails", "~> 5.2.1", ">= 5.2.1.1"
-  s.add_dependency "slim-rails"
-  s.add_dependency "material_icons"
-  s.add_dependency "sass-rails"
-  s.add_dependency "sass"
-  s.add_dependency "jquery-rails"
-  s.add_dependency "turbolinks"
-  s.add_dependency "bootstrap-sass"
-  s.add_dependency "rails_autolink"
-  s.add_dependency 'coffee-rails'
+  s.add_dependency 'rails', '~> 5.2', '>= 5.2.2'
+  s.add_dependency 'slim-rails', '~> 3.2', '>= 3.2.0'
+  s.add_dependency 'material_icons', '~> 2.2', '>= 2.2.1'
+  s.add_dependency 'sass-rails', '~> 5.0', '>= 5.0.7'
+  s.add_dependency 'sass', '~> 3.7', '>= 3.7.3'
+  s.add_dependency 'jquery-rails', '~> 4.3', '>= 4.3.3'
+  s.add_dependency 'turbolinks', '~> 5.2', '>= 5.2.0'
+  s.add_dependency 'bootstrap-sass', '~> 3.4', '>= 3.4.0'
+  s.add_dependency 'rails_autolink', '~> 1.1', '>= 1.1.6'
+  s.add_dependency 'coffee-rails', '~> 4.2', '>= 4.2.2'
 
-  s.add_development_dependency "sqlite3"
-  s.add_development_dependency "rspec-rails"
+  s.add_development_dependency 'sqlite3', '~> 1.3', '>= 1.3.13'
+  s.add_development_dependency 'rspec-rails', '~> 3.8', '>= 3.8.2'
 end

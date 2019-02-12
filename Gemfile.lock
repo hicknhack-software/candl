@@ -1,17 +1,17 @@
 PATH
   remote: .
   specs:
-    candle (0.1.0)
-      bootstrap-sass
-      coffee-rails
-      jquery-rails
-      material_icons
-      rails (~> 5.2.1, >= 5.2.1.1)
-      rails_autolink
-      sass
-      sass-rails
-      slim-rails
-      turbolinks
+    candl (0.1.0)
+      bootstrap-sass (~> 3.4, >= 3.4.0)
+      coffee-rails (~> 4.2, >= 4.2.2)
+      jquery-rails (~> 4.3, >= 4.3.3)
+      material_icons (~> 2.2, >= 2.2.1)
+      rails (~> 5.2, >= 5.2.2)
+      rails_autolink (~> 1.1, >= 1.1.6)
+      sass (~> 3.7, >= 3.7.3)
+      sass-rails (~> 5.0, >= 5.0.7)
+      slim-rails (~> 3.2, >= 3.2.0)
+      turbolinks (~> 5.2, >= 5.2.0)
 
 GEM
   remote: https://rubygems.org/
@@ -200,9 +200,9 @@ PLATFORMS
   x64-mingw32
 
 DEPENDENCIES
-  candle!
-  rspec-rails
-  sqlite3
+  candl!
+  rspec-rails (~> 3.8, >= 3.8.2)
+  sqlite3 (~> 1.3, >= 1.3.13)
   tzinfo-data
 
 BUNDLED WITH
