@@ -41,6 +41,10 @@ module Candle
 
       requested_events = JSON.parse(Net::HTTP.get(URI.parse(google_test_path)))
 
+      puts "######################################"
+      puts requested_events
+      puts requested_events["items"]
+
       restructured_events = requested_events["items"].map{ |e| e["start"]["dateTime"] != nil ? Event.new(DateTime.parse(e["start"]["dateTime"]), DateTime.parse(e["end"]["dateTime"]), e["summary"], e["description"], e["location"], e["id"]) : Event.new(Date.parse(e["start"]["date"]), Date.parse(e["end"]["date"]), e["summary"], e["description"], e["location"], e["id"]) }
 
       restructured_events.to_a
