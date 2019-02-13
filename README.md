@@ -70,8 +70,8 @@ In the view you want the calendar to appear initialize a configuration hash like
 - config = { \
     calendar: { \
       google_calendar_api_host_base_path: "https://www.googleapis.com/calendar/v3/calendars/", \
-      calendar_id: "grhnk1uaotql6gv2dkf9ldmqjc@group.calendar.google.com", \
-      api_key: "AIzaSyD1UIlX0n4-DnY3hSoTkeTZFbbsNO2g67E" \
+      calendar_id: "schau-hnh%40web.de", \
+      api_key: "AIzaSyB5F1X5hBi8vPsmt1itZTpMluUAjytf6hI" \
     }, \
     agenda: { \
       display_day_count: 14, \
