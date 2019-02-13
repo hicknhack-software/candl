@@ -58,6 +58,43 @@ Or install it yourself as:
 $ gem install candle
 ```
 
+Additionally:
+Require the library in the ./config/application.rb of your ruby on rails application.
+```ruby
+# ./config/application.rb
+require 'candl'
+```
+
+In the view you want the calendar to appear initialize a configuration hash like so:
+```slim
+- config = { \
+    calendar: { \
+      google_calendar_api_host_base_path: "https://www.googleapis.com/calendar/v3/calendars/", \
+      calendar_id: "grhnk1uaotql6gv2dkf9ldmqjc@group.calendar.google.com", \
+      api_key: "AIzaSyD1UIlX0n4-DnY3hSoTkeTZFbbsNO2g67E" \
+    }, \
+    agenda: { \
+      display_day_count: 14, \
+      days_shift_coefficient: 7 \
+    }, \
+    month: { \
+      summary_teaser_length_in_characters: 42, \
+      delta_start_of_weekday_from_sunday: 1 \
+    }, \
+    general: { \
+      maps_query_host: "https://www.google.de/maps", \
+      maps_query_parameter: "q", \
+      cache_update_interval_in_s: 7200 \
+    } \
+  }
+```
+In this example done in a view that uses .slim instead of .erb but in the end config is just a ruby hash that needs to have the right key's and sensible values for them.
+
+Then at the position in your view where the calendar is supposed to show itself:
+```slim
+= render partial: "candle/calendar/frame", locals: { config: config }
+```
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at this repository.
