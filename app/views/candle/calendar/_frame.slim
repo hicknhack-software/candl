@@ -10,7 +10,7 @@
       - Candle::MonthModel.new(config, current_shift_factor, date_today)
   - rescue => exception
     - events_error_free = false
-    - puts "ERROR - GOT EXCEPTION:"
+    - puts "\033[31mERROR - GOT EXCEPTION:\033[0m"
     - puts exception
     / Maybe there is a beter way to signal the exception?
 - else
@@ -19,7 +19,7 @@
       - Candle::AgendaModel.new(config, current_shift_factor, date_today)
   - rescue => exception
     - events_error_free = false
-    - puts "ERROR - GOT EXCEPTION:"
+    - puts "\033[31mERROR - GOT EXCEPTION:\033[0m"
     - puts exception
     / Maybe there is a beter way to signal the exception?
 
