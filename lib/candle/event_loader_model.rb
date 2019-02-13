@@ -45,6 +45,7 @@ module Candle
         restructured_events = requested_events["items"].map{ |e| e["start"]["dateTime"] != nil ? Event.new(DateTime.parse(e["start"]["dateTime"]), DateTime.parse(e["end"]["dateTime"]), e["summary"], e["description"], e["location"], e["id"]) : Event.new(Date.parse(e["start"]["date"]), Date.parse(e["end"]["date"]), e["summary"], e["description"], e["location"], e["id"]) }
       else
         raise Exception.new("Calendar event request failed and responded with:\n  #{requested_events}")
+      end
 
       restructured_events.to_a
     end
