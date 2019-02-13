@@ -45,6 +45,12 @@ module Candle
       puts requested_events
       puts requested_events["items"]
 
+      puts requested_events["items"] != nil
+      puts requested_events["items"].empty?
+      puts requested_events["items"].any?
+
+      [].map{ |e| puts e}
+
       restructured_events = requested_events["items"].map{ |e| e["start"]["dateTime"] != nil ? Event.new(DateTime.parse(e["start"]["dateTime"]), DateTime.parse(e["end"]["dateTime"]), e["summary"], e["description"], e["location"], e["id"]) : Event.new(Date.parse(e["start"]["date"]), Date.parse(e["end"]["date"]), e["summary"], e["description"], e["location"], e["id"]) }
 
       restructured_events.to_a
