@@ -1,19 +1,13 @@
-
 - events_error_free = true
 - is_month = params[:v] != 'a'
 - current_shift_factor = params[:s] || 0
 - date_today = Date.today
 - update_interval = config[:general][:cache_update_interval_in_s]
 
-div
-  p = config
-  p = config[:general]
-  p = config[:general][:cache_update_interval_in_s]
-
 - if is_month
-  - begin
     - month = Rails.cache.fetch("#month/#{current_shift_factor}/#{date_today}", expires_in: update_interval) do
       - Candle::MonthModel.new(config, current_shift_factor, date_today)
+  - begin
   - rescue => exception
     - events_error_free = false
     - puts "ERROR - GOT EXCEPTION:"
