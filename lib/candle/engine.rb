@@ -5,10 +5,10 @@ require "material_icons"
 require "bootstrap-sass"
 require "rails_autolink"
 
-module Candle
+module Candl
   class Engine < ::Rails::Engine
-    isolate_namespace Candle
-    initializer 'candle.assets' do |app|
+    isolate_namespace Candl
+    initializer 'candl.assets' do |app|
       %w(stylesheets javascripts).each do |sub|
         app.config.assets.paths << root.join('app', 'assets', sub).to_s
       end

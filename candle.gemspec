@@ -1,17 +1,17 @@
 $:.push File.expand_path("lib", __dir__)
 
 # Maintain your gem's version:
-require "candle/version"
+require "candl/version"
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
   s.name        = "candl"
-  s.version     = Candle::VERSION
+  s.version     = Candl::VERSION
   s.authors     = ["Andreas Schau"]
   s.email       = ["andreas.schau@hicknhack-software.com"]
   s.homepage    = "https://www.hicknhack-software.com/it-events"
   s.summary     = %q{This gem provides functionality to handle the loading of event data from a public google calendar via an api key. (Without the need for OAuth.)}
-  s.description = %q{It does so by offering functions that gather the event data, cache it and structure it in a way that makes it easy to display in an agenda or monthly overview-like style.}
+  s.description = %q{This gem provides functionality to handle the loading of event data from a public google calendar via an api key. (Without the need for OAuth.) It does so by offering functions that gather the event data, cache it and structure it in a way that makes it easy to display in an agenda or monthly overview-like style.}
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]

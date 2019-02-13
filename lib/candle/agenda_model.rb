@@ -1,4 +1,4 @@
-module Candle
+module Candl
   class AgendaModel
     # Attributes one needs to access from the "outside"
     attr_reader :display_day_count

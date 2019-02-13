@@ -1,4 +1,4 @@
-# Candle
+# Candl
 
 This gem helps load and display a calendar from google calendar in an agenda or month style view.
 
@@ -6,7 +6,7 @@ This gem helps load and display a calendar from google calendar in an agenda or 
 
 The gem consists of mainly three models. One - the event loader model - is focusing on loading the events from the google server via a restfull api and an api key. The other two are the agenda and month model wich offer functionality to organize the data for an agenda or month view. Next to the models are the views wich come with a "_frame.slim" view. This view can be included in a host view as a partial. This way one can display a calendar inside of another page. The "_frame.slim" is the entry point that prepares the model and view for the respective view type (month/agenda). (It does not come with a seperate week view.)
 
-Find an example inclusion of the _frame.slim partial in the show.slim file in candle/spec/dummy/app/views/sample/show.slim.
+Find an example inclusion of the _frame.slim partial in the show.slim file in candl/spec/dummy/app/views/sample/show.slim.
 
 The main steps to use this gem are:
 - Initialize an agenda or month model object with a config that specifies these values:
@@ -45,7 +45,7 @@ Then once configured you can load the events inside of the current timeframe and
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'candle'
+gem 'candl'
 ```
 
 And then execute:
@@ -55,7 +55,7 @@ $ bundle
 
 Or install it yourself as:
 ```bash
-$ gem install candle
+$ gem install candl
 ```
 
 Additionally:
@@ -92,7 +92,7 @@ In this example done in a view that uses .slim instead of .erb but in the end co
 
 Then at the position in your view where the calendar is supposed to show itself:
 ```slim
-= render partial: "candle/calendar/frame", locals: { config: config }
+= render partial: "candl/calendar/frame", locals: { config: config }
 ```
 
 ## Contributing

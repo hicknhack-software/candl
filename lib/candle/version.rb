@@ -1,3 +1,3 @@
-module Candle
-  VERSION = '0.1.4'
+module Candl
+  VERSION = '0.1.5'
 end

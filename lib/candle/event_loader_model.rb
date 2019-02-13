@@ -1,7 +1,7 @@
 require 'net/http'
 require 'uri'
 
-module Candle
+module Candl
   class EventLoaderModel
     Event ||= Struct.new(:dtstart, :dtend, :summary, :description, :location, :uid)
     def self.Event(dtstart, dtend, summary, description, location, uid)

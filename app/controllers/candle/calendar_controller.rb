@@ -1,6 +1,6 @@
-require_dependency "candle/application_controller"
+require_dependency "candl/application_controller"
 
-module Candle
+module Candl
   class CalendarController < ApplicationController
     def show
     end

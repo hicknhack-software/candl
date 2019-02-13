@@ -1,9 +1,9 @@
-require "candle/engine"
+require "candl/engine"
 
-require "candle/event_loader_model"
-require "candle/agenda_model"
-require "candle/month_model"
+require "candl/event_loader_model"
+require "candl/agenda_model"
+require "candl/month_model"
 
-module Candle
+module Candl
   # Code is all found in the models and views.
 end

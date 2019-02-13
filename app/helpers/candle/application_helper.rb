@@ -1,4 +1,4 @@
-module Candle
+module Candl
   module ApplicationHelper
   end
 end

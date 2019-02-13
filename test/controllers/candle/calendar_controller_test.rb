@@ -1,6 +1,6 @@
 require 'test_helper'
 
-module Candle
+module Candl
   class CalendarControllerTest < ActionDispatch::IntegrationTest
     include Engine.routes.url_helpers
 

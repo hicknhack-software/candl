@@ -13,4 +13,4 @@
 //= require rails-ujs
 //= require activestorage
 //= require_tree .
-//= require candle/application
+//= require candl/application

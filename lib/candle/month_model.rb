@@ -1,4 +1,4 @@
-module Candle
+module Candl
   class MonthModel
     # Attributes one needs to access from the "outside"
     attr_reader :delta_start_of_weekday_from_sunday

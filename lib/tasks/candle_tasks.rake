@@ -1,4 +1,4 @@
 # desc "Explaining what the task does"
-# task :candle do
+# task :candl do
 #   # Task goes here
 # end

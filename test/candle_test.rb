@@ -1,7 +1,7 @@
 require 'test_helper'
 
-class Candle::Test < ActiveSupport::TestCase
+class Candl::Test < ActiveSupport::TestCase
   test "truth" do
-    assert_kind_of Module, Candle
+    assert_kind_of Module, Candl
   end
 end

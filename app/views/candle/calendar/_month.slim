@@ -9,11 +9,11 @@
           th.weekday_name_header scope="col" = l(date, format: '%A')
 
     tbody
-      - Candle::MonthModel.weeks_in_months_view_dates(calendar_month.view_dates).times do |row|
+      - Candl::MonthModel.weeks_in_months_view_dates(calendar_month.view_dates).times do |row|
         tr.day_row
           - 7.times do |collumn|
             - current_day = calendar_month.view_dates[7 * row + collumn]
-            td class=Candle::MonthModel.emphasize_date(current_day, Date.today, 'bg-info', 'bg-default')
+            td class=Candl::MonthModel.emphasize_date(current_day, Date.today, 'bg-info', 'bg-default')
               - if current_day.day == 1
                 .day_head = current_day.day.to_s + '. ' + l(current_day, format: '%b.')
               - else
@@ -26,7 +26,7 @@
             - collumn = 0
             - while collumn < 7 do
               - current_day = calendar_month.view_dates[7 * row + collumn]
-              - current_event = Candle::MonthModel.find_best_fit_for_day(calendar_month.view_dates[7 * row], current_day, weekly_multiday_event_heap)
+              - current_event = Candl::MonthModel.find_best_fit_for_day(calendar_month.view_dates[7 * row], current_day, weekly_multiday_event_heap)
               - if current_event
                 - weekly_multiday_event_heap.delete_if{ |event| event.uid == current_event.uid }
 
@@ -36,12 +36,12 @@
 
                 - if current_event_length_within_current_week > 0
                   td.small_padding colspan=current_event_length_within_current_week
-                    .multiday_event.onclick_open_backdrop class=Candle::MonthModel.multiday_event_cutoff(current_event.dtstart < current_day, current_event.dtend > (calendar_month.view_dates[7 * row + 6] + 1.day), 'multiday_event_leftcut', 'multiday_event_bothcut', 'multiday_event_rightcut')
+                    .multiday_event.onclick_open_backdrop class=Candl::MonthModel.multiday_event_cutoff(current_event.dtstart < current_day, current_event.dtend > (calendar_month.view_dates[7 * row + 6] + 1.day), 'multiday_event_leftcut', 'multiday_event_bothcut', 'multiday_event_rightcut')
 
                       .snowflake_popover[data-placement="bottom" data-toggle="popover" data-container="body" type="button" data-html="true" href="#"]
 
                         div
-                          span.summary.breakable{ title = Candle::MonthModel.summary_title(current_event) } == current_event.summary.to_s.force_encoding("UTF-8").truncate(calendar_month.summary_teaser_length().to_i, seperator: ' ')
+                          span.summary.breakable{ title = Candl::MonthModel.summary_title(current_event) } == current_event.summary.to_s.force_encoding("UTF-8").truncate(calendar_month.summary_teaser_length().to_i, seperator: ' ')
 
                         .popover_content.hide
                           .close_span
@@ -81,7 +81,7 @@
         tr.events_row
           - 7.times do |collumn|
             - current_day = calendar_month.view_dates[7 * row + collumn]
-            td class=Candle::MonthModel.emphasize_date(current_day, Date.today, 'bg-info', 'bg-default')
+            td class=Candl::MonthModel.emphasize_date(current_day, Date.today, 'bg-info', 'bg-default')
 
               - if calendar_month.grouped_events[current_day]
                 - calendar_month.grouped_events[current_day].sort_by{ |event| event.dtstart.localtime }.each do |event|
@@ -91,7 +91,7 @@
 
                       div
                         span.time = event.dtstart.localtime.strftime('%k:%M')
-                        span.summary.breakable{ title = Candle::MonthModel.summary_title(event) } == event.summary.to_s.force_encoding("UTF-8").truncate(calendar_month.summary_teaser_length.to_i, seperator: ' ')
+                        span.summary.breakable{ title = Candl::MonthModel.summary_title(event) } == event.summary.to_s.force_encoding("UTF-8").truncate(calendar_month.summary_teaser_length.to_i, seperator: ' ')
 
                       .popover_content.hide
                         .close_span

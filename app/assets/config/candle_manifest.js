@@ -1,2 +1,2 @@
-//= link_directory ../javascripts/candle .js
-//= link_directory ../stylesheets/candle .css
+//= link_directory ../javascripts/candl .js
+//= link_directory ../stylesheets/candl .css
