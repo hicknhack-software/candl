@@ -1,97 +1,46 @@
-- unless (calendar_month.grouped_events.empty? && calendar_month.grouped_multiday_events.empty?)
-  table.table.table-bordered.month_view
-    thead
-      colgroup span="7"
-      tr
-        th colspan="7" scope="colgroup" = l((calendar_month.view_dates.select{ |date| date.day == 14 }).first, format: '%B %Y')
-      tr
-        - calendar_month.weekday_dates.each do |date|
-          th.weekday_name_header scope="col" = l(date, format: '%A')
+table.table.table-bordered.month_view
+  thead
+    colgroup span="7"
+    tr
+      th colspan="7" scope="colgroup" = l((calendar_month.view_dates.select{ |date| date.day == 14 }).first, format: '%B %Y')
+    tr
+      - calendar_month.weekday_dates.each do |date|
+        th.weekday_name_header scope="col" = l(date, format: '%A')
 
-    tbody
-      - Candl::MonthModel.weeks_in_months_view_dates(calendar_month.view_dates).times do |row|
-        tr.day_row
-          - 7.times do |collumn|
+  tbody
+    - Candl::MonthModel.weeks_in_months_view_dates(calendar_month.view_dates).times do |row|
+      tr.day_row
+        - 7.times do |collumn|
+          - current_day = calendar_month.view_dates[7 * row + collumn]
+          td class=Candl::MonthModel.emphasize_date(current_day, Date.today, 'bg-info', 'bg-default')
+            - if current_day.day == 1
+              .day_head = current_day.day.to_s + '. ' + l(current_day, format: '%b.')
+            - else
+              .day_head = current_day.day.to_s
+
+      - weekly_multiday_event_heap = calendar_month.grouped_multiday_events[row]
+
+      - until weekly_multiday_event_heap.empty?
+        tr
+          - collumn = 0
+          - while collumn < 7 do
             - current_day = calendar_month.view_dates[7 * row + collumn]
-            td class=Candl::MonthModel.emphasize_date(current_day, Date.today, 'bg-info', 'bg-default')
-              - if current_day.day == 1
-                .day_head = current_day.day.to_s + '. ' + l(current_day, format: '%b.')
-              - else
-                .day_head = current_day.day.to_s
+            - current_event = Candl::MonthModel.find_best_fit_for_day(calendar_month.view_dates[7 * row], current_day, weekly_multiday_event_heap)
+            - if current_event
+              - weekly_multiday_event_heap.delete_if{ |event| event.uid == current_event.uid }
 
-        - weekly_multiday_event_heap = calendar_month.grouped_multiday_events[row]
+              - current_event_length_within_current_week = [(calendar_month.view_dates[7 * row + 6] + 1.day), current_event.dtend].min.to_date - current_day.to_date
 
-        - until weekly_multiday_event_heap.empty?
-          tr
-            - collumn = 0
-            - while collumn < 7 do
-              - current_day = calendar_month.view_dates[7 * row + collumn]
-              - current_event = Candl::MonthModel.find_best_fit_for_day(calendar_month.view_dates[7 * row], current_day, weekly_multiday_event_heap)
-              - if current_event
-                - weekly_multiday_event_heap.delete_if{ |event| event.uid == current_event.uid }
+              - collumn += current_event_length_within_current_week - 1
 
-                - current_event_length_within_current_week = [(calendar_month.view_dates[7 * row + 6] + 1.day), current_event.dtend].min - current_day
+              - if current_event_length_within_current_week > 0
+                td.small_padding colspan=current_event_length_within_current_week
+                  .multiday_event.onclick_open_backdrop class=Candl::MonthModel.multiday_event_cutoff(current_event.dtstart < current_day, current_event.dtend > (calendar_month.view_dates[7 * row + 6] + 1.day), 'multiday_event_leftcut', 'multiday_event_bothcut', 'multiday_event_rightcut')
 
-                - collumn += current_event_length_within_current_week - 1
-
-                - if current_event_length_within_current_week > 0
-                  td.small_padding colspan=current_event_length_within_current_week
-                    .multiday_event.onclick_open_backdrop class=Candl::MonthModel.multiday_event_cutoff(current_event.dtstart < current_day, current_event.dtend > (calendar_month.view_dates[7 * row + 6] + 1.day), 'multiday_event_leftcut', 'multiday_event_bothcut', 'multiday_event_rightcut')
-
-                      .snowflake_popover[data-placement="bottom" data-toggle="popover" data-container="body" type="button" data-html="true" href="#"]
-
-                        div
-                          span.summary.breakable{ title = Candl::MonthModel.summary_title(current_event) } == current_event.summary.to_s.force_encoding("UTF-8").truncate(calendar_month.summary_teaser_length().to_i, seperator: ' ')
-
-                        .popover_content.hide
-                          .close_span
-                            .close title='Schließen'
-                              i.material-icons close
-
-                          .summary title='Zusammenfassung'
-                            .text
-                              i.material-icons.icon_spacing subject
-                              .breakable = current_event.summary.to_s.force_encoding('UTF-8')
-                          hr
-
-                          .from_to title='Zeitraum'
-                            .text
-                              i.material-icons.icon_spacing date_range
-                              = l(current_event.dtstart, format: :short) + " - " + l((current_event.dtend - 1.day), format: :short)
-                          hr
-
-                          - if !current_event.location.to_s.strip.empty?
-                            .location title='Adresse'
-                              .text
-                                i.material-icons.icon_spacing location_on
-                                a href=calendar_month.address_to_maps_path(current_event.location.to_s).force_encoding('UTF-8') target='_blank'
-                                  .flex_wrap_it.breakable = current_event.location.to_s.force_encoding('UTF-8')
-                            hr
-
-                          - if !current_event.description.to_s.strip.empty?
-                            .description title='Weitere Beschreibung'
-                              .text
-                                i.material-icons.icon_spacing description
-                                .flex_wrap_it.breakable = auto_link(current_event.description.to_s.force_encoding("UTF-8"), html: { target: '_blank' })
-              - else
-                td
-
-              - collumn += 1
-
-        tr.events_row
-          - 7.times do |collumn|
-            - current_day = calendar_month.view_dates[7 * row + collumn]
-            td class=Candl::MonthModel.emphasize_date(current_day, Date.today, 'bg-info', 'bg-default')
-
-              - if calendar_month.grouped_events[current_day]
-                - calendar_month.grouped_events[current_day].sort_by{ |event| event.dtstart.localtime }.each do |event|
-
-                  .event.onclick_open_backdrop
                     .snowflake_popover[data-placement="bottom" data-toggle="popover" data-container="body" type="button" data-html="true" href="#"]
 
                       div
-                        span.time = event.dtstart.localtime.strftime('%k:%M')
-                        span.summary.breakable{ title = Candl::MonthModel.summary_title(event) } == event.summary.to_s.force_encoding("UTF-8").truncate(calendar_month.summary_teaser_length.to_i, seperator: ' ')
+                        span.summary.breakable{ title = Candl::MonthModel.summary_title(current_event) } == current_event.summary.to_s.force_encoding("UTF-8").truncate(calendar_month.summary_teaser_length().to_i, seperator: ' ')
 
                       .popover_content.hide
                         .close_span
@@ -101,29 +50,77 @@
                         .summary title='Zusammenfassung'
                           .text
                             i.material-icons.icon_spacing subject
-                            .breakable = event.summary.to_s.force_encoding('UTF-8')
+                            .breakable = current_event.summary.to_s.force_encoding('UTF-8')
                         hr
 
                         .from_to title='Zeitraum'
                           .text
                             i.material-icons.icon_spacing date_range
-                            = l(event.dtstart.localtime, format: :short) + " - " + l(event.dtend.localtime, format: :hnh_short)
+                            = l(current_event.dtstart, format: :short) + " - " + l((current_event.dtend - 1.day), format: :short)
+                        hr
 
-                        - if !event.location.to_s.strip.empty?
-                          hr
+                        - if !current_event.location.to_s.strip.empty?
                           .location title='Adresse'
                             .text
-                              .icon_spacing
-                                i.material-icons location_on
-                              a href=calendar_month.address_to_maps_path(event.location.to_s).force_encoding('UTF-8') target='_blank'
-                                .flex_wrap_it.breakable = event.location.to_s.force_encoding('UTF-8')
-
-                        - if !event.description.to_s.strip.empty?
+                              i.material-icons.icon_spacing location_on
+                              a href=calendar_month.address_to_maps_path(current_event.location.to_s).force_encoding('UTF-8') target='_blank'
+                                .flex_wrap_it.breakable = current_event.location.to_s.force_encoding('UTF-8')
                           hr
+
+                        - if !current_event.description.to_s.strip.empty?
                           .description title='Weitere Beschreibung'
                             .text
                               i.material-icons.icon_spacing description
-                              .flex_wrap_it.breakable = auto_link(event.description.to_s.force_encoding("UTF-8"), html: { target: '_blank' })
+                              .flex_wrap_it.breakable = auto_link(current_event.description.to_s.force_encoding("UTF-8"), html: { target: '_blank' })
+            - else
+              td
 
-- else
-  p No upcoming events in the next week.
+            - collumn += 1
+
+      tr.events_row
+        - 7.times do |collumn|
+          - current_day = calendar_month.view_dates[7 * row + collumn]
+          td class=Candl::MonthModel.emphasize_date(current_day, Date.today, 'bg-info', 'bg-default')
+
+            - if calendar_month.grouped_events[current_day]
+              - calendar_month.grouped_events[current_day].sort_by{ |event| event.dtstart.localtime }.each do |event|
+
+                .event.onclick_open_backdrop
+                  .snowflake_popover[data-placement="bottom" data-toggle="popover" data-container="body" type="button" data-html="true" href="#"]
+
+                    div
+                      span.time = event.dtstart.localtime.strftime('%k:%M')
+                      span.summary.breakable{ title = Candl::MonthModel.summary_title(event) } == event.summary.to_s.force_encoding("UTF-8").truncate(calendar_month.summary_teaser_length.to_i, seperator: ' ')
+
+                    .popover_content.hide
+                      .close_span
+                        .close title='Schließen'
+                          i.material-icons close
+
+                      .summary title='Zusammenfassung'
+                        .text
+                          i.material-icons.icon_spacing subject
+                          .breakable = event.summary.to_s.force_encoding('UTF-8')
+                      hr
+
+                      .from_to title='Zeitraum'
+                        .text
+                          i.material-icons.icon_spacing date_range
+                          = l(event.dtstart.localtime, format: :short) + " - " + l(event.dtend.localtime, format: :hnh_short)
+
+                      - if !event.location.to_s.strip.empty?
+                        hr
+                        .location title='Adresse'
+                          .text
+                            .icon_spacing
+                              i.material-icons location_on
+                            a href=calendar_month.address_to_maps_path(event.location.to_s).force_encoding('UTF-8') target='_blank'
+                              .flex_wrap_it.breakable = event.location.to_s.force_encoding('UTF-8')
+
+                      - if !event.description.to_s.strip.empty?
+                        hr
+                        .description title='Weitere Beschreibung'
+                          .text
+                            i.material-icons.icon_spacing description
+                            .flex_wrap_it.breakable = auto_link(event.description.to_s.force_encoding("UTF-8"), html: { target: '_blank' })
+

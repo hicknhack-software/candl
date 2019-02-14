@@ -44,7 +44,6 @@ module Candl
       if requested_events["items"] != nil
         restructured_events = requested_events["items"].map{ |e| e["start"]["dateTime"] != nil ? Event.new(DateTime.parse(e["start"]["dateTime"]), DateTime.parse(e["end"]["dateTime"]), e["summary"], e["description"], e["location"], e["id"]) : Event.new(Date.parse(e["start"]["date"]), Date.parse(e["end"]["date"]), e["summary"], e["description"], e["location"], e["id"]) }
       else
-        # raise Exception.new("Calendar event request failed and responded with:\n  #{requested_events}")
         raise "Calendar event request failed and responded with:\n  #{requested_events}"
       end
 
@@ -55,11 +54,11 @@ module Candl
     def self.spread_multiday_events(events, from, to)
       unspreaded_events = events.select{ |event| (event.dtend - event.dtstart).to_i > 0 }
 
-      unspreaded_events.map do |event|
+      spreaded_events = unspreaded_events.map do |event|
         ([from, (event.dtstart + 1.day)].max .. [(event.dtend - 1.day), to].min).to_a.map do |date|
           Event.new.tap do |e|
-            e.dtstart = date
-            e.dtend = event.dtend
+            e.dtstart = date.to_date
+            e.dtend = event.dtend.to_date
             e.summary = event.summary
             e.location = event.location
             e.description = event.description

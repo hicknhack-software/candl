@@ -1,6 +1,8 @@
 module Candl
   class MonthModel
     # Attributes one needs to access from the "outside"
+    attr_reader :initialization_successful
+
     attr_reader :delta_start_of_weekday_from_sunday
     attr_reader :summary_teaser_length
 
@@ -30,25 +32,30 @@ module Candl
     #   } \
     # }
     def initialize(config, current_shift_factor, date_today = Date.today)
-      self.google_calendar_base_path = config[:calendar][:google_calendar_api_host_base_path]
+      self.google_calendar_base_path = config[:calendar][:google_calendar_api_host_base_path] ||= "https://www.googleapis.com/calendar/v3/calendars/"
       self.calendar_id = config[:calendar][:calendar_id]
       self.api_key = config[:calendar][:api_key]
 
-      self.summary_teaser_length = config[:month][:summary_teaser_length_in_characters]
-      self.delta_start_of_weekday_from_sunday = config[:month][:delta_start_of_weekday_from_sunday]
+      self.summary_teaser_length = config[:month][:summary_teaser_length_in_characters] ||= 42
+      self.delta_start_of_weekday_from_sunday = config[:month][:delta_start_of_weekday_from_sunday] ||= 1
 
-      self.days_shift_coefficient = config[:agenda][:days_shift_coefficient]
+      self.days_shift_coefficient = config[:agenda][:days_shift_coefficient] ||= 7
 
-      self.maps_query_host = config[:general][:maps_query_host]
-      self.maps_query_parameter = config[:general][:maps_query_parameter]
-      self.cache_update_interval_in_ms = config[:general][:cache_update_interval_in_ms]
+      self.maps_query_host = config[:general][:maps_query_host] ||= "https://www.google.de/maps"
+      self.maps_query_parameter = config[:general][:maps_query_parameter] ||= "q"
 
       date_month_start = MonthModel.current_month_start(current_shift_factor, date_today)
       date_month_end = MonthModel.current_month_end(current_shift_factor, date_today)
 
       self.view_dates = generate_months_view_dates(date_month_start, date_month_end)
 
-      events = get_month_events(view_dates.first, view_dates.last)
+      self.initialization_successful = true
+      begin
+        events = get_month_events(view_dates.first, view_dates.last)
+      rescue => exception
+        self.initialization_successful = false
+        logger.error "ERROR: #{exception}"
+      end
 
       self.grouped_events = MonthModel::group_events(events, view_dates.first, view_dates.last)
       self.grouped_multiday_events = MonthModel::group_multiday_events(events, view_dates)
@@ -119,7 +126,6 @@ module Candl
 
     # build a google maps path from the adress details
     def address_to_maps_path(address)
-      # URI::HTTP.build( host: maps_query_host, query: { maps_query_parameter: address.force_encoding("UTF-8").gsub(" ", "+") }.to_query).to_s
       ActionDispatch::Http::URL.path_for path: maps_query_host, params: Hash[maps_query_parameter.to_s, address.force_encoding("UTF-8").gsub(" ", "+")]
     end
 
@@ -175,13 +181,12 @@ module Candl
 
     # gets events within a day grouped by day
     def self.group_events(events, from, to)
-      # events = month_events(from, to)
-      events.select { |event| event.dtstart.instance_of?(DateTime) }.sort_by{ |event| event.dtstart.localtime }.group_by { |event| event.dtstart.to_date }
+      events.select{ |event| (event.dtstart.to_date == event.dtend.to_date) }.sort_by{ |event| event.dtstart.localtime }.group_by{ |event| event.dtstart.to_date }
     end
 
     # gets events that are multiple day's long grouped by the week
     def self.group_multiday_events(events, view_dates)
-      multiday_events = events.select { |event| event.dtstart.instance_of?(Date) }
+      multiday_events = events.select { |event| event.dtstart.to_date != event.dtend.to_date }
 
       grouped_multiday_events = []
 
@@ -197,6 +202,8 @@ module Candl
       grouped_multiday_events
     end
 
+    attr_writer :initialization_successful
+
     attr_writer :delta_start_of_weekday_from_sunday
     attr_writer :summary_teaser_length
 
@@ -210,7 +217,6 @@ module Candl
     attr_accessor :google_calendar_base_path
     attr_accessor :maps_query_host
     attr_accessor :maps_query_parameter
-    attr_accessor :cache_update_interval_in_ms
 
     attr_accessor :days_shift_coefficient
 

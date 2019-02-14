@@ -2,3 +2,6 @@ de:
   time:
     formats:
       hnh_short: "%R Uhr"
+      
+  error:
+    no_events_loaded: "Fehler aufgetreten. Bitte versuchen sie es später noch einmal."

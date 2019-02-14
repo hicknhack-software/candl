@@ -2,31 +2,16 @@
 - is_month = params[:v] != 'a'
 - current_shift_factor = params[:s] || 0
 - date_today = Date.today
-- update_interval = config[:general][:cache_update_interval_in_s]
+- update_interval = config[:general][:cache_update_interval_in_s] ||= 2.hours
 
 - if is_month
-  - begin
-    - month = Rails.cache.fetch("#month/#{current_shift_factor}/#{date_today}", expires_in: update_interval) do
-      - Candl::MonthModel.new(config, current_shift_factor, date_today)
-  - rescue => exception
-    - events_error_free = false
-    - puts "\033[31mERROR - GOT EXCEPTION:\033[0m"
-    - puts exception
-    / Maybe there is a beter way to signal the exception?
+  - model = Rails.cache.fetch("#month/#{current_shift_factor}/#{date_today}", expires_in: update_interval) do
+    - Candl::MonthModel.new(config, current_shift_factor, date_today)
 - else
-  - begin
-    - agenda = Rails.cache.fetch("#agenda/#{current_shift_factor}/#{date_today}", expires_in: update_interval) do
-      - Candl::AgendaModel.new(config, current_shift_factor, date_today)
-  - rescue => exception
-    - events_error_free = false
-    - puts "\033[31mERROR - GOT EXCEPTION:\033[0m"
-    - puts exception
-    / Maybe there is a beter way to signal the exception?
-
-- if events_error_free
-  - model = (is_month ? month : agenda)
-
-
+  - model = Rails.cache.fetch("#agenda/#{current_shift_factor}/#{date_today}", expires_in: update_interval) do
+    - Candl::AgendaModel.new(config, current_shift_factor, date_today)
+  
+- if model.initialization_successful
   .popover_backdrop.init_display_none
 
   div
@@ -55,5 +40,4 @@
         = render partial: "candl/calendar/agenda", locals: { calendar_agenda: model }
 
 - else
-  .error_message Der Kalender kann wegen einer kurzzeitigen technischen Störung gerade nicht angezeigt werden. Bitte versuchen Sie es in einer Weile noch einmal.
-
+  .error_message 'error.no_events_loaded'

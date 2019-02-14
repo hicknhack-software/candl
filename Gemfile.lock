@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    candl (0.1.7)
+    candl (0.1.8)
       bootstrap-sass (~> 3.3, >= 3.3.7)
       coffee-rails (~> 4.2, >= 4.2.0)
       jquery-rails (~> 4.3, >= 4.3.0)

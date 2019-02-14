@@ -1,6 +1,8 @@
 module Candl
   class AgendaModel
     # Attributes one needs to access from the "outside"
+    attr_reader :initialization_successful
+
     attr_reader :display_day_count
     attr_reader :days_shift_coefficient
 
@@ -28,20 +30,26 @@ module Candl
     #   } \
     # }
     def initialize(config, current_shift_factor, date_today = Date.today)
-      self.google_calendar_base_path = config[:calendar][:google_calendar_api_host_base_path]
+      self.google_calendar_base_path = config[:calendar][:google_calendar_api_host_base_path] ||= "https://www.googleapis.com/calendar/v3/calendars/"
       self.calendar_id = config[:calendar][:calendar_id]
       self.api_key = config[:calendar][:api_key]
 
-      self.display_day_count = config[:agenda][:display_day_count]
-      self.days_shift_coefficient = config[:agenda][:days_shift_coefficient]
+      self.display_day_count = config[:agenda][:display_day_count] ||= 14
+      self.days_shift_coefficient = config[:agenda][:days_shift_coefficient] ||= 7
 
-      self.maps_query_host = config[:general][:maps_query_host]
-      self.maps_query_parameter = config[:general][:maps_query_parameter]
+      self.maps_query_host = config[:general][:maps_query_host] ||= "https://www.google.de/maps"
+      self.maps_query_parameter = config[:general][:maps_query_parameter] ||= "q"
 
       from = current_start_date(current_shift_factor, date_today)
       to = current_end_date(current_shift_factor, date_today)
 
-      events = agenda_events(from, to)
+      self.initialization_successful = true
+      begin
+        events = agenda_events(from, to)
+      rescue => exception
+        self.initialization_successful = false
+        logger.error "ERROR: #{exception}"
+      end
 
       self.agenda_grouped_events = get_days_grouped_events(events)
     end
@@ -101,8 +109,6 @@ module Candl
 
     # build a google maps path from the  adress details
     def address_to_maps_path(address)
-      # URI::HTTP.build( host: maps_query_host, query: { q: address.force_encoding("UTF-8").gsub(" ", "+") }.to_query).to_s
-
       ActionDispatch::Http::URL.path_for path: maps_query_host, params: Hash[maps_query_parameter.to_s, address.force_encoding("UTF-8").gsub(" ", "+")]
     end
 
@@ -117,6 +123,8 @@ module Candl
     def get_days_grouped_events(events)
       events.group_by { |event| event.dtstart.to_date }
     end
+
+    attr_writer :initialization_successful
 
     attr_writer :display_day_count
     attr_writer :days_shift_coefficient

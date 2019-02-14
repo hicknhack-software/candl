@@ -2,3 +2,6 @@ en:
   time:
     formats:
       hnh_short: "%l:%M %P"
+
+  error:
+    no_events_loaded: "An error occurred. Please try again later."
