@@ -11,7 +11,7 @@ Find an example inclusion of the _frame.slim partial in the show.slim file in ca
 The main steps to use this gem are:
 - Initialize an agenda or month model object with a config that specifies these values:
 
-````
+```json
 config = {
   "calendar": {
     "google_calendar_api_host_base_path": "https://www.googleapis.com/calendar/v3/calendars/",
@@ -31,7 +31,7 @@ config = {
     "maps_query_parameter": "q"
   }
 }
-````
+```
 
 - The node "calendar" holds all relevant information to the chosen calendar that you want to load events from.
 - Under "general" there is the "maps_query_host" wich is the base url to a map service (like google maps in this example) and the "maps_query_parameter". (Maybe in the future there will be more map services, that let one search for a location just via the url and a parameter. But for now i only found gmaps to be able to do this. Like: https://www.google.de/maps/?q=Dresden+Hauptbahnhof)
@@ -67,25 +67,26 @@ require 'candl'
 
 In the view you want the calendar to appear initialize a configuration hash like so:
 ```slim
-- config = { \
-    calendar: { \
-      google_calendar_api_host_base_path: "https://www.googleapis.com/calendar/v3/calendars/", \
-      calendar_id: "schau-hnh%40web.de", \
-      api_key: "AIzaSyB5F1X5hBi8vPsmt1itZTpMluUAjytf6hI" \
-    }, \
-    agenda: { \
-      display_day_count: 14, \
-      days_shift_coefficient: 7 \
-    }, \
-    month: { \
-      summary_teaser_length_in_characters: 42, \
-      delta_start_of_weekday_from_sunday: 1 \
-    }, \
-    general: { \
-      maps_query_host: "https://www.google.de/maps", \
-      maps_query_parameter: "q", \
-      cache_update_interval_in_s: 7200 \
-    } \
+ruby:
+  config = {
+    calendar: {
+      google_calendar_api_host_base_path: "https://www.googleapis.com/calendar/v3/calendars/",
+      calendar_id: "schau-hnh%40web.de",
+      api_key: "AIzaSyB5F1X5hBi8vPsmt1itZTpMluUAjytf6hI"
+    },
+    agenda: {
+      display_day_count: 14,
+      days_shift_coefficient: 7
+    },
+    month: {
+      summary_teaser_length_in_characters: 42,
+      delta_start_of_weekday_from_sunday: 1
+    },
+    general: {
+      maps_query_host: "https://www.google.de/maps",
+      maps_query_parameter: "q",
+      cache_update_interval_in_s: 7200
+    }
   }
 ```
 In this example done in a view that uses .slim instead of .erb but in the end config is just a ruby hash that needs to have the right key's and sensible values for them.
