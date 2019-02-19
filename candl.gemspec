@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'slim-rails', '~> 3.2', '>= 3.2.0'
   s.add_dependency 'material_icons', '~> 2.2', '>= 2.2.0'
   s.add_dependency 'sass-rails', '~> 5.0', '>= 5.0.0'
-  s.add_dependency 'sass', '~> 3.1', '>= 3.1.0'
+  s.add_dependency 'sass', '~> 3.7', '>= 3.7.0'
   s.add_dependency 'jquery-rails', '~> 4.3', '>= 4.3.0'
   s.add_dependency 'turbolinks', '~> 5.2', '>= 5.2.0'
   s.add_dependency 'bootstrap-sass', '~> 3.3', '>= 3.3.7'
