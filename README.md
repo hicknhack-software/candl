@@ -1,6 +1,8 @@
 # Candl
 
 [![Build Status](https://travis-ci.org/hicknhack-software/candl.svg?branch=master)](https://travis-ci.org/hicknhack-software/candl)
+[![Maintainability](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/hicknhack-software/candl/maintainability)
+[![Gem Version](https://badge.fury.io/rb/candl.svg)](https://badge.fury.io/rb/candl)
 
 This gem helps load and display a calendar from google calendar in an agenda or month style view.
 
