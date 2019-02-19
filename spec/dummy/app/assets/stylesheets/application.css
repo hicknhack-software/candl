@@ -12,7 +12,7 @@
  *
  *= require_tree .
  *= require_self
- *= require candl/candl
+ *= require candl
  */
 
 /* There seems to be a bug that makes it necessary to have some sort of change to this file in order to have the typical asset pipeline behaviour. */
