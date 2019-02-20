@@ -30,3 +30,8 @@ Rake::TestTask.new(:test) do |t|
 end
 
 task default: :test
+
+desc "This task enhances the build task in a way that helps keeping the lockfile correct for travis ci if a new release is created."
+Rake::Task["build"].enhance do
+  sh("bundle update")
+end

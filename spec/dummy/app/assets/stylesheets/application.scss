@@ -10,9 +10,11 @@
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
  *
- *= require_tree .
  *= require_self
+ *= require material_icons
  *= require candl
  */
+
+@import "bootstrap";
 
 /* There seems to be a bug that makes it necessary to have some sort of change to this file in order to have the typical asset pipeline behaviour. */
