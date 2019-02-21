@@ -62,6 +62,7 @@ And also require the library in the ```./app/assets/javascripts/application.js``
 //= require candl
 //  ...
 ```
+Hint: The ```...``` Ellipsis is there to indicate left out other entries. The relevant entries (asset requirements of gems this gem depends on) are also included here to give a suggested order in wich to require them, since a wrong order here can lead to confusing errors.
 
 You may look in ```./spec/dummy/app/assets/``` and there in ```./javascripts``` and ```./stylesheets``` to see how it is done there. An example inclusion of the ```_frame.slim``` partial in a view can be found in ```./spec/dummy/app/views/sample/show.slim```. Or to see the calendar in action run ```rails server``` in your command line interface (while beeing in the gems root folder) and when the server is started navigate to ```localhost:3000/calendar``` and load the page.
 
@@ -93,7 +94,7 @@ ruby:
   }
 ```
 
-Tipps:
+Hints:
 
 - The node "calendar" holds all relevant information to the chosen calendar that you want to load events from.
 - Under "general" there is the "maps_query_host" wich is the base url to a map service (like google maps in this example) and the "maps_query_parameter". (Maybe in the future there will be more map services, that let one search for a location just via the url and a parameter. But for now i only found gmaps to be able to do this. Like: https://www.google.de/maps/?q=Dresden+Hauptbahnhof)
