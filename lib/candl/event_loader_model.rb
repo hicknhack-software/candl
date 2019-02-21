@@ -38,16 +38,24 @@ module Candl
       requested_events = JSON.parse(Net::HTTP.get(URI.parse(google_test_path)))
 
       if requested_events["items"] != nil
-        restructured_events = requested_events["items"].map{ |e|
-          isDate = e["start"]["date"] != nil
-          parsedStart = isDate ? Date.parse(e["start"]["date"]) : DateTime.parse(e["start"]["dateTime"])
-          parsedEnd = isDate ? Date.parse(e["end"]["date"]) : DateTime.parse(e["end"]["dateTime"])
-          Event.new(parsedStart, parsedEnd, e["summary"], e["description"], e["location"], e["id"]) }
+        restructured_events = parse_event_time_type(requested_events)
       else
         raise "Calendar event request failed and responded with:\n  #{requested_events}"
       end
 
       restructured_events.to_a
+    end
+
+    def self.parse_event_time_type(events)
+      events["items"].map{ |e|
+        if e["start"]["date"] != nil
+          parsedStart = Date.parse(e["start"]["date"])
+          parsedEnd = Date.parse(e["end"]["date"])
+        else
+          parsedStart = DateTime.parse(e["start"]["dateTime"])
+          parsedEnd = DateTime.parse(e["end"]["dateTime"])
+        end
+        Event.new(parsedStart, parsedEnd, e["summary"], e["description"], e["location"], e["id"]) }
     end
 
     # inserts new event starts for events that are multiple day's long so in the agenda one can see them filling multiple day's
