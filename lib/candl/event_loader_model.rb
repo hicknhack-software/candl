@@ -4,10 +4,7 @@ require 'uri'
 module Candl
   class EventLoaderModel
     Event ||= Struct.new(:dtstart, :dtend, :summary, :description, :location, :uid)
-    def self.Event(dtstart, dtend, summary, description, location, uid)
-      Event.new(:dtstart, :dtend, :summary, :description, :location, :uid)
-    end
-
+    
     # load events prepared for agenda view
     def self.get_agenda_events(calendar_adress, from, to)
       events = parse_calendar(calendar_adress, from, to)
@@ -41,7 +38,11 @@ module Candl
       requested_events = JSON.parse(Net::HTTP.get(URI.parse(google_test_path)))
 
       if requested_events["items"] != nil
-        restructured_events = requested_events["items"].map{ |e| e["start"]["dateTime"] != nil ? Event.new(DateTime.parse(e["start"]["dateTime"]), DateTime.parse(e["end"]["dateTime"]), e["summary"], e["description"], e["location"], e["id"]) : Event.new(Date.parse(e["start"]["date"]), Date.parse(e["end"]["date"]), e["summary"], e["description"], e["location"], e["id"]) }
+        restructured_events = requested_events["items"].map{ |e|
+          isDate = e["start"]["date"] != nil
+          parsedStart = isDate ? Date.parse(e["start"]["date"]) : DateTime.parse(e["start"]["dateTime"])
+          parsedEnd = isDate ? Date.parse(e["end"]["date"]) : DateTime.parse(e["end"]["dateTime"])
+          Event.new(parsedStart, parsedEnd, e["summary"], e["description"], e["location"], e["id"]) }
       else
         raise "Calendar event request failed and responded with:\n  #{requested_events}"
       end

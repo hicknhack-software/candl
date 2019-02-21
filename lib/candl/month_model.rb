@@ -32,6 +32,20 @@ module Candl
     #   } \
     # }
     def initialize(config, current_shift_factor, date_today = Date.today)
+      extract_config(config)
+
+      date_month_start = MonthModel.current_month_start(current_shift_factor, date_today)
+      date_month_end = MonthModel.current_month_end(current_shift_factor, date_today)
+
+      self.view_dates = generate_months_view_dates(date_month_start, date_month_end)
+
+      events = get_month_events(view_dates.first, view_dates.last)
+
+      self.grouped_events = MonthModel::group_events(events, view_dates.first, view_dates.last)
+      self.grouped_multiday_events = MonthModel::group_multiday_events(events, view_dates)
+    end
+
+    def extract_config(config)
       self.google_calendar_base_path = config[:calendar][:google_calendar_api_host_base_path] ||= "https://www.googleapis.com/calendar/v3/calendars/"
       self.calendar_id = config[:calendar][:calendar_id]
       self.api_key = config[:calendar][:api_key]
@@ -43,29 +57,6 @@ module Candl
 
       self.maps_query_host = config[:general][:maps_query_host] ||= "https://www.google.de/maps"
       self.maps_query_parameter = config[:general][:maps_query_parameter] ||= "q"
-
-      date_month_start = MonthModel.current_month_start(current_shift_factor, date_today)
-      date_month_end = MonthModel.current_month_end(current_shift_factor, date_today)
-
-      self.view_dates = generate_months_view_dates(date_month_start, date_month_end)
-
-      # self.initialization_successful = true
-      # begin
-      #   events = get_month_events(view_dates.first, view_dates.last)
-      # rescue => exception
-      #   self.initialization_successful = false
-      #   logger.error "ERROR: #{exception}"
-      # end
-
-
-
-      events = get_month_events(view_dates.first, view_dates.last)
-
-
-
-
-      self.grouped_events = MonthModel::group_events(events, view_dates.first, view_dates.last)
-      self.grouped_multiday_events = MonthModel::group_multiday_events(events, view_dates)
     end
 
     # finds the best event, among those multiday events within a week-group, for the current day (the algorithm will find the longest events first to display them above shorter multiday events)
