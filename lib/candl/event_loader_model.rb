@@ -9,8 +9,8 @@ module Candl
     end
 
     # load events prepared for agenda view
-    def self.get_agenda_events(google_calendar_base_path, calendar_id, api_key, from, to)
-      events = parse_calendar(google_calendar_base_path, calendar_id, api_key, from, to)
+    def self.get_agenda_events(calendar_adress, from, to)
+      events = parse_calendar(calendar_adress, from, to)
       spreaded_events = spread_multiday_events(events, from, to)
 
       sorted_events = (events + spreaded_events.to_a).sort_by do |el|
@@ -19,8 +19,8 @@ module Candl
     end
 
     # load events for month view
-    def self.get_month_events(google_calendar_base_path, calendar_id, api_key, from, to)
-      events = parse_calendar(google_calendar_base_path, calendar_id, api_key, from, to)
+    def self.get_month_events(calendar_adress, from, to)
+      events = parse_calendar(calendar_adress, from, to)
 
       sorted_events = (events).sort_by do |el|
         [el.dtstart, el.summary]
@@ -30,14 +30,13 @@ module Candl
     private
 
     # build request path to calendar host (google calendar)
-    def self.build_google_request_path(google_calendar_base_path, calendar_id, api_key, from, to)
-      google_test_path = "#{google_calendar_base_path}#{calendar_id}/events?key=#{api_key}&singleEvents=true&orderBy=startTime&timeMin=#{CGI.escape(from.to_s)}&timeMax=#{CGI.escape(to.to_s)}"
+    def self.build_google_request_path(calendar_adress, from, to)
+      google_test_path = "#{calendar_adress[:path]}#{calendar_adress[:id]}/events?key=#{calendar_adress[:key]}&singleEvents=true&orderBy=startTime&timeMin=#{CGI.escape(from.to_s)}&timeMax=#{CGI.escape(to.to_s)}"
     end
 
     # parses json response form calendar host (google calendar)
-    def self.parse_calendar(google_calendar_base_path, calendar_id, api_key, from, to)
-
-      google_test_path = build_google_request_path(google_calendar_base_path, calendar_id, api_key, from.to_datetime, to.to_datetime)
+    def self.parse_calendar(calendar_adress, from, to)
+      google_test_path = build_google_request_path(calendar_adress, from.to_datetime, to.to_datetime)
 
       requested_events = JSON.parse(Net::HTTP.get(URI.parse(google_test_path)))
 

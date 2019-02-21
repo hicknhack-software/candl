@@ -43,14 +43,7 @@ module Candl
       from = current_start_date(current_shift_factor, date_today)
       to = current_end_date(current_shift_factor, date_today)
 
-      self.initialization_successful = true
-      begin
-        events = agenda_events(from, to)
-      rescue => exception
-        self.initialization_successful = false
-        logger.error "ERROR: #{exception}"
-      end
-
+      events = agenda_events(from, to)
       self.agenda_grouped_events = get_days_grouped_events(events)
     end
 
@@ -116,7 +109,15 @@ module Candl
 
     # load events for agenda view
     def agenda_events(from, to)
-      EventLoaderModel.get_agenda_events(google_calendar_base_path, calendar_id, api_key, from, to)
+      begin        
+        calendar_adress = { path: google_calendar_base_path, id: calendar_id, key: api_key }
+        events = EventLoaderModel.get_agenda_events(calendar_adress, from, to)
+        self.initialization_successful = true
+      rescue => exception
+        logger.error "ERROR: #{exception}"
+        self.initialization_successful = false
+      end
+      events
     end
 
     # load events for agenda view grouped by day

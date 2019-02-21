@@ -67,7 +67,8 @@ RSpec.describe Candl::EventLoaderModel do
     let(:from) { Date.parse("2019-01-01") }
     let(:to) { Date.parse("2019-01-31") }
     it "Build google request path" do
-      expect(Candl::EventLoaderModel.build_google_request_path(google_base_path, calendar_id, api_key, from, to)).to eq("#{google_base_path}#{calendar_id}/events?key=#{api_key}&singleEvents=true&orderBy=startTime&timeMin=#{from}&timeMax=#{to}")
+      calendar_adress = { path: google_base_path, id: calendar_id, key: api_key }
+      expect(Candl::EventLoaderModel.build_google_request_path(calendar_adress, from, to)).to eq("#{google_base_path}#{calendar_id}/events?key=#{api_key}&singleEvents=true&orderBy=startTime&timeMin=#{from}&timeMax=#{to}")
     end
   end
 end
