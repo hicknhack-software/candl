@@ -10,6 +10,18 @@ This gem helps load and display a calendar from google calendar in an agenda or 
 
 The gem consists of mainly three models and views. One - the event loader model - is focusing on loading the events from the google server via a restfull api and an api key. The other two are the agenda and month model wich offer functionality to organize the data for an agenda or month view. Next to the models are the views wich come with a ```_frame.slim``` view. This view can be included in a host view as a partial. This way one can display a calendar inside of another page. The ```_frame.slim``` is the entry point that prepares the model and view for the respective view type (month/agenda). (It does not come with a seperate week view.)
 
+## Pre-Installation
+
+This gem depends on a few other gems that are quite common so your application may already depend on them. To make dependency matters easier this gem will not depend on them on its own but rather expects these dependencies to be present in your application. This way there should be less dependency version collisions since you get to define them. (This gem does depend on them but it only uses base level functionality so that it shouldn't matter much what version you use.)
+
+These dependencies are:
+- material_icons
+- jquery3 (jquery_rails)
+- turbolinks
+- bootstrap (bootstrap-sass)
+
+So make sure to also have these gems in your gemfile and installed them via ```bundle install```.
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -32,13 +44,23 @@ Additionally:
 Require the library in the ```./app/assets/stylesheets/application.scss``` (or .css) of your ruby on rails application like so:
 ```scss
 # ./app/assets/stylesheets/application.scss
+/*
+ ...
+ *= require material_icons
  *= require candl
+ ...
+ */
 ```
 
 And also require the library in the ```./app/assets/javascripts/application.js``` of your ruby on rails application like so:
 ```javascript
 # ./app/assets/javascripts/application.js
+//  ...
+//= require jquery3
+//= require turbolinks
+//= require bootstrap
 //= require candl
+//  ...
 ```
 
 You may look in ```./spec/dummy/app/assets/``` and there in ```./javascripts``` and ```./stylesheets``` to see how it is done there. An example inclusion of the ```_frame.slim``` partial in a view can be found in ```./spec/dummy/app/views/sample/show.slim```. Or to see the calendar in action run ```rails server``` in your command line interface (while beeing in the gems root folder) and when the server is started navigate to ```localhost:3000/calendar``` and load the page.
