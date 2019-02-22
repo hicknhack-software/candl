@@ -46,17 +46,26 @@ module Candl
     end
 
     def extract_config(config)
-      self.google_calendar_base_path = config[:calendar][:google_calendar_api_host_base_path] ||= "https://www.googleapis.com/calendar/v3/calendars/"
+      self.google_calendar_base_path = config[:calendar][:google_calendar_api_host_base_path]
+      self.google_calendar_base_path ||= "https://www.googleapis.com/calendar/v3/calendars/"
+
       self.calendar_id = config[:calendar][:calendar_id]
       self.api_key = config[:calendar][:api_key]
 
-      self.summary_teaser_length = config[:month][:summary_teaser_length_in_characters] ||= 42
-      self.delta_start_of_weekday_from_sunday = config[:month][:delta_start_of_weekday_from_sunday] ||= 1
+      self.summary_teaser_length = config[:month][:summary_teaser_length_in_characters]
+      self.summary_teaser_length ||= 42
 
-      self.days_shift_coefficient = config[:agenda][:days_shift_coefficient] ||= 7
+      self.delta_start_of_weekday_from_sunday = config[:month][:delta_start_of_weekday_from_sunday]
+      self.delta_start_of_weekday_from_sunday ||= 1
 
-      self.maps_query_host = config[:general][:maps_query_host] ||= "https://www.google.de/maps"
-      self.maps_query_parameter = config[:general][:maps_query_parameter] ||= "q"
+      self.days_shift_coefficient = config[:agenda][:days_shift_coefficient]
+      self.days_shift_coefficient ||= 7
+
+      self.maps_query_host = config[:general][:maps_query_host]
+      self.maps_query_host ||= "https://www.google.de/maps"
+      
+      self.maps_query_parameter = config[:general][:maps_query_parameter]
+      self.maps_query_parameter ||= "q"
     end
 
     # finds the best event, among those multiday events within a week-group, for the current day (the algorithm will find the longest events first to display them above shorter multiday events)
@@ -203,21 +212,7 @@ module Candl
         first_weekday = view_dates[7 * week]
         last_weekday = view_dates[7 * week + 6]
 
-        # puts "::::::::::::::::::::::::"
-        # puts first_weekday
-        # puts last_weekday.instance_variables
-        # puts last_weekday.methods
-        # puts last_weekday.end_of_day
-        # puts last_weekday.at_end_of_day
-
-        # puts (last_weekday + 1.day)
-
-        # puts last_weekday.next_day
-
-        # weeks_events = multiday_events.select{ |event| event.dtend > first_weekday && event.dtstart <= last_weekday }
         weeks_events = multiday_events.select{ |event| event.dtend > first_weekday && event.dtstart < last_weekday.next_day }
-
-        # puts weeks_events
 
         grouped_multiday_events[week] = weeks_events
       end
