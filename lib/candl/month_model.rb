@@ -32,7 +32,16 @@ module Candl
     #   } \
     # }
     def initialize(config, current_shift_factor, date_today = Date.today)
-      extract_config(config)
+      self.google_calendar_base_path = config[:calendar][:google_calendar_api_host_base_path]
+      self.calendar_id = config[:calendar][:calendar_id]
+      self.api_key = config[:calendar][:api_key]
+
+      self.summary_teaser_length = config[:month][:summary_teaser_length_in_characters]
+      self.delta_start_of_weekday_from_sunday = config[:month][:delta_start_of_weekday_from_sunday]
+      self.days_shift_coefficient = config[:agenda][:days_shift_coefficient]
+
+      self.maps_query_host = config[:general][:maps_query_host]
+      self.maps_query_parameter = config[:general][:maps_query_parameter]
 
       date_month_start = MonthModel.current_month_start(current_shift_factor, date_today)
       date_month_end = MonthModel.current_month_end(current_shift_factor, date_today)
@@ -43,29 +52,6 @@ module Candl
 
       self.grouped_events = MonthModel::group_events(events, view_dates.first, view_dates.last)
       self.grouped_multiday_events = MonthModel::group_multiday_events(events, view_dates)
-    end
-
-    def extract_config(config)
-      self.google_calendar_base_path = config[:calendar][:google_calendar_api_host_base_path]
-      self.google_calendar_base_path ||= "https://www.googleapis.com/calendar/v3/calendars/"
-
-      self.calendar_id = config[:calendar][:calendar_id]
-      self.api_key = config[:calendar][:api_key]
-
-      self.summary_teaser_length = config[:month][:summary_teaser_length_in_characters]
-      self.summary_teaser_length ||= 42
-
-      self.delta_start_of_weekday_from_sunday = config[:month][:delta_start_of_weekday_from_sunday]
-      self.delta_start_of_weekday_from_sunday ||= 1
-
-      self.days_shift_coefficient = config[:agenda][:days_shift_coefficient]
-      self.days_shift_coefficient ||= 7
-
-      self.maps_query_host = config[:general][:maps_query_host]
-      self.maps_query_host ||= "https://www.google.de/maps"
-      
-      self.maps_query_parameter = config[:general][:maps_query_parameter]
-      self.maps_query_parameter ||= "q"
     end
 
     # finds the best event, among those multiday events within a week-group, for the current day (the algorithm will find the longest events first to display them above shorter multiday events)

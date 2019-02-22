@@ -101,8 +101,6 @@ Hints:
 - In "agenda" you can set the span "display_day_count" of day's considered/loaded in one view and by how many day's it will be shifted "days_shift_coefficient".
 - In "month" you can set the "summary_teaser_length_in_characters" and in your view you can truncate the title to that length to reduce the size of the seperate events not to become to big in the view. The "delta_start_of_weekday_from_sunday" can be set to whatever value you need to have the week start at another day than sunday. (Like 1 -> Monday)
 
-For most values there are sensible standards defined but for the sake of clarity you may still define them in the config.
-
 Then at the position in your view where the calendar is supposed to show itself:
 ```slim
 = render partial: "candl/calendar/frame", locals: { config: config }
