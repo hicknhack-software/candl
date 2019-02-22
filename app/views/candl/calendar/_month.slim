@@ -19,13 +19,14 @@ table.table.table-bordered.month_view
               .day_head = current_day.day.to_s
 
       - weekly_multiday_event_heap = calendar_month.grouped_multiday_events[row]
-
-      - until weekly_multiday_event_heap.empty?
+      - unless weekly_multiday_event_heap.empty?
         tr
           - collumn = 0
+
           - while collumn < 7 do
             - current_day = calendar_month.view_dates[7 * row + collumn]
             - current_event = Candl::MonthModel.find_best_fit_for_day(calendar_month.view_dates[7 * row], current_day, weekly_multiday_event_heap)
+
             - if current_event
               - weekly_multiday_event_heap.delete_if{ |event| event.uid == current_event.uid }
 
@@ -35,7 +36,7 @@ table.table.table-bordered.month_view
 
               - if current_event_length_within_current_week > 0
                 td.small_padding colspan=current_event_length_within_current_week
-                  .multiday_event.onclick_open_backdrop class=Candl::MonthModel.multiday_event_cutoff(current_event.dtstart < current_day, current_event.dtend > (calendar_month.view_dates[7 * row + 6] + 1.day), 'multiday_event_leftcut', 'multiday_event_bothcut', 'multiday_event_rightcut')
+                  .multiday_event.onclick_open_backdrop class=Candl::MonthModel.multiday_event_cutoff({ start: current_event.dtstart < current_day, end: current_event.dtend > (calendar_month.view_dates[7 * row + 6] + 1.day) }, { start: 'multiday_event_leftcut', both: 'multiday_event_bothcut', end: 'multiday_event_rightcut' })
 
                     .snowflake_popover[data-placement="bottom" data-toggle="popover" data-container="body" type="button" data-html="true" href="#"]
 

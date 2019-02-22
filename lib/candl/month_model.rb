@@ -61,7 +61,10 @@ module Candl
 
     # finds the best event, among those multiday events within a week-group, for the current day (the algorithm will find the longest events first to display them above shorter multiday events)
     def self.find_best_fit_for_day(first_weekday, day, event_heap)
-      best_fit = event_heap.select{ |event| (day == first_weekday ?  (event.dtstart <= day && event.dtend >= day) : (event.dtstart == day)) }.sort_by{ |event| [event.dtstart.to_time.to_i, -event.dtend.to_time.to_i] }.first
+      best_fit = event_heap.select{ |event|
+        (day == first_weekday ?
+          (event.dtstart.to_date <= day.to_date && event.dtend.to_date >= day.to_date) :
+          (event.dtstart.to_date == day.to_date)) }.sort_by{ |event| [event.dtstart.to_time.to_i, -event.dtend.to_time.to_i] }.first
     end
 
     # builds base path of current view
@@ -105,13 +108,13 @@ module Candl
     end
 
     # depending on the cutoff conditions this will apply a cutoff style to the start of the event, the end of it, both ends or neither
-    def self.multiday_event_cutoff(cutoff_start_condition, cutoff_end_condition, cutoff_start_style, cutoff_both_style, cutoff_end_style)
-      if (cutoff_start_condition && cutoff_end_condition)
-        cutoff_both_style
-      elsif (cutoff_start_condition)
-        cutoff_start_style
-      elsif (cutoff_end_condition)
-        cutoff_end_style
+    def self.multiday_event_cutoff(start_end_conditions, cutoff_styles)
+      if (start_end_conditions[:start] && start_end_conditions[:end])
+        cutoff_styles[:both]
+      elsif (start_end_conditions[:start])
+        cutoff_styles[:start]
+      elsif (start_end_conditions[:end])
+        cutoff_styles[:end]
       else
         ''
       end
@@ -200,7 +203,21 @@ module Candl
         first_weekday = view_dates[7 * week]
         last_weekday = view_dates[7 * week + 6]
 
-        weeks_events = multiday_events.select{ |event| event.dtend > first_weekday && event.dtstart <= last_weekday }
+        # puts "::::::::::::::::::::::::"
+        # puts first_weekday
+        # puts last_weekday.instance_variables
+        # puts last_weekday.methods
+        # puts last_weekday.end_of_day
+        # puts last_weekday.at_end_of_day
+
+        # puts (last_weekday + 1.day)
+
+        # puts last_weekday.next_day
+
+        # weeks_events = multiday_events.select{ |event| event.dtend > first_weekday && event.dtstart <= last_weekday }
+        weeks_events = multiday_events.select{ |event| event.dtend > first_weekday && event.dtstart < last_weekday.next_day }
+
+        # puts weeks_events
 
         grouped_multiday_events[week] = weeks_events
       end

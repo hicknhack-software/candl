@@ -168,13 +168,18 @@ RSpec.describe Candl::MonthModel do
     let(:grouped_multiday_events) { month.grouped_multiday_events }
     let(:out_of_timeframe) { grouped_multiday_events.select { |e| e.dtstart < first_day_of_first_week || e.dtend > last_day_of_first_week } }
 
+    # Week: 7.1.19 - 13.1.19
     let(:first_weekday) { Date.parse("2019-01-07") }
     let(:day) { Date.parse("2019-01-08") }
-    let(:event_heap) { [Candl::EventLoaderModel::Event.new(Date.parse("2019-01-08"), Date.parse("2019-01-11"), "s_1", "d_1", "l_1", "u_1"), Candl::EventLoaderModel::Event.new(Date.parse("2019-01-08"), Date.parse("2019-01-9"), "s_1", "d_1", "l_1", "u_1"), Candl::EventLoaderModel::Event.new(Date.parse("2019-01-08"), Date.parse("2019-01-10"), "s_1", "d_1", "l_1", "u_1"),
-      Candl::EventLoaderModel::Event.new(Date.parse("2019-01-09"), Date.parse("2019-01-11"), "s_1", "d_1", "l_1", "u_1")] }
+    let(:event_heap) {
+      [ Candl::EventLoaderModel::Event.new(Date.parse("2019-01-04"), Date.parse("2019-01-11"), "s_1", "d_1", "l_1", "u_1"),
+        Candl::EventLoaderModel::Event.new(DateTime.parse("2019-01-06T10:00:00"), DateTime.parse("2019-01-12T18:30:00"), "s_5", "d_5", "l_5", "u_5"),
+        Candl::EventLoaderModel::Event.new(Date.parse("2019-01-08"), Date.parse("2019-01-09"), "s_2", "d_2", "l_2", "u_2"),        
+        Candl::EventLoaderModel::Event.new(Date.parse("2019-01-08"), Date.parse("2019-01-10"), "s_3", "d_3", "l_3", "u_3"),
+        Candl::EventLoaderModel::Event.new(Date.parse("2019-01-09"), Date.parse("2019-01-11"), "s_4", "d_4", "l_4", "u_4")] }
 
     it "Find best fit for day" do
-      expect(Candl::MonthModel.find_best_fit_for_day(first_weekday, day, event_heap)).to eq(Candl::EventLoaderModel::Event.new(Date.parse("2019-01-08"), Date.parse("2019-01-11"), "s_1", "d_1", "l_1", "u_1"))
+      expect(Candl::MonthModel.find_best_fit_for_day(first_weekday, day, event_heap)).to eq(Candl::EventLoaderModel::Event.new(Date.parse("2019-01-08"), Date.parse("2019-01-10"), "s_3", "d_3", "l_3", "u_3"))
     end
 
 
@@ -204,16 +209,16 @@ RSpec.describe Candl::MonthModel do
     end
 
     it "multiday event cutoff start" do
-      expect(Candl::MonthModel.multiday_event_cutoff(true, false, "start", "both", "end")).to eq("start")
+      expect(Candl::MonthModel.multiday_event_cutoff({ start: true, end: false }, { start: "start", both: "both", end: "end" })).to eq("start")
     end
     it "multiday event cutoff both" do
-      expect(Candl::MonthModel.multiday_event_cutoff(true, true, "start", "both", "end")).to eq("both")
+      expect(Candl::MonthModel.multiday_event_cutoff({ start: true, end: true }, { start: "start", both: "both", end: "end" })).to eq("both")
     end
     it "multiday event cutoff end" do
-      expect(Candl::MonthModel.multiday_event_cutoff(false, true, "start", "both", "end")).to eq("end")
+      expect(Candl::MonthModel.multiday_event_cutoff({ start: false, end: true }, { start: "start", both: "both", end: "end" })).to eq("end")
     end
     it "multiday event cutoff none" do
-      expect(Candl::MonthModel.multiday_event_cutoff(false, false, "start", "both", "end")).to eq("")
+      expect(Candl::MonthModel.multiday_event_cutoff({ start: false, end: false }, { start: "start", both: "both", end: "end" })).to eq("")
     end
 
     let(:weekday_dates_of_date_today) { [Date.parse("2019-01-07"), Date.parse("2019-01-08"), Date.parse("2019-01-09"), Date.parse("2019-01-10"), Date.parse("2019-01-11"), Date.parse("2019-01-12"), Date.parse("2019-01-13")] }
