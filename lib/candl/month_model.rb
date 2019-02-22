@@ -48,7 +48,11 @@ module Candl
 
       self.view_dates = generate_months_view_dates(date_month_start, date_month_end)
 
-      events = get_month_events(view_dates.first, view_dates.last)
+      calendar_adress = { path: google_calendar_base_path, id: calendar_id, key: api_key }
+      result = EventLoaderModel.get_events(calendar_adress, view_dates.first, view_dates.last, :month)
+
+      events = result[:events]
+      self.initialization_successful = result[:success]
 
       self.grouped_events = MonthModel::group_events(events, view_dates.first, view_dates.last)
       self.grouped_multiday_events = MonthModel::group_multiday_events(events, view_dates)
@@ -170,18 +174,18 @@ module Candl
 
     private
 
-    # gets events of all kinds for the timeframe [form, to]
-    def get_month_events(from, to)
-      begin
-        calendar_adress = { path: google_calendar_base_path, id: calendar_id, key: api_key }
-        events = EventLoaderModel.get_events(calendar_adress, from, to, :month)
-        self.initialization_successful = true
-      rescue => exception
-        logger.error "ERROR: #{exception}"
-        self.initialization_successful = false
-      end
-      events
-    end
+    # # gets events of all kinds for the timeframe [form, to]
+    # def get_month_events(from, to)
+    #   begin
+    #     calendar_adress = { path: google_calendar_base_path, id: calendar_id, key: api_key }
+    #     events = EventLoaderModel.get_events(calendar_adress, from, to, :month)
+    #     self.initialization_successful = true
+    #   rescue => exception
+    #     logger.error "ERROR: #{exception}"
+    #     self.initialization_successful = false
+    #   end
+    #   events
+    # end
 
     # gets events within a day grouped by day
     def self.group_events(events, from, to)

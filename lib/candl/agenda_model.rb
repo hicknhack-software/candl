@@ -43,7 +43,12 @@ module Candl
       from = current_start_date(current_shift_factor, date_today)
       to = current_end_date(current_shift_factor, date_today)
 
-      events = agenda_events(from, to)
+      calendar_adress = { path: google_calendar_base_path, id: calendar_id, key: api_key }
+      result = EventLoaderModel.get_events(calendar_adress, from, to, :agenda)
+
+      events = result[:events]
+      self.initialization_successful = result[:success]
+
       self.agenda_grouped_events = get_days_grouped_events(events)
     end
 
@@ -107,18 +112,18 @@ module Candl
 
     private
 
-    # load events for agenda view
-    def agenda_events(from, to)
-      begin        
-        calendar_adress = { path: google_calendar_base_path, id: calendar_id, key: api_key }
-        events = EventLoaderModel.get_events(calendar_adress, from, to, :agenda)
-        self.initialization_successful = true
-      rescue => exception
-        logger.error "ERROR: #{exception}"
-        self.initialization_successful = false
-      end
-      events
-    end
+    # # load events for agenda view
+    # def agenda_events(from, to)
+    #   begin        
+    #     calendar_adress = { path: google_calendar_base_path, id: calendar_id, key: api_key }
+    #     events = EventLoaderModel.get_events(calendar_adress, from, to, :agenda)
+    #     self.initialization_successful = true
+    #   rescue => exception
+    #     logger.error "ERROR: #{exception}"
+    #     self.initialization_successful = false
+    #   end
+    #   events
+    # end
 
     # load events for agenda view grouped by day
     def get_days_grouped_events(events)

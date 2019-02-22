@@ -7,7 +7,13 @@ module Candl
     
     # load events prepared for agenda view
     def self.get_events(calendar_adress, from, to, view)
-      events = parse_calendar(calendar_adress, from, to)
+      begin
+        events = parse_calendar(calendar_adress, from, to)
+        initialization_successful = true
+      rescue => exception
+        logger.error "ERROR: #{exception}"
+        initialization_successful = false
+      end
 
       if view == :month
         sorted_events = (events).sort_by do |el|
@@ -22,6 +28,8 @@ module Candl
       else
         raise `Unknown view type: #{view}`
       end
+
+      { events: sorted_events, success: initialization_successful }
     end
 
     private

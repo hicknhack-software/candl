@@ -139,7 +139,7 @@ RSpec.describe Candl::AgendaModel do
     let(:month) { Candl::MonthModel.new(test_config, current_shift_factor, fake_today) }
     let(:months_view_dates) { month.generate_months_view_dates(date_month_start, date_month_end) }
 
-    let(:events) { month.month_events(months_view_dates.first, months_view_dates.last) }
+    let(:events) { EventLoaderModel.get_events(calendar_adress, view_dates.first, view_dates.last, :month)[:events] }
 
     let(:test_range_in_month) { 13 }
     it "month(agenda(month)) ?= month" do
