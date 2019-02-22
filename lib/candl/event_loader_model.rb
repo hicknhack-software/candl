@@ -6,21 +6,21 @@ module Candl
     Event ||= Struct.new(:dtstart, :dtend, :summary, :description, :location, :uid)
     
     # load events prepared for agenda view
-    def self.get_agenda_events(calendar_adress, from, to)
-      events = parse_calendar(calendar_adress, from, to)
-      spreaded_events = spread_multiday_events(events, from, to)
-
-      sorted_events = (events + spreaded_events.to_a).sort_by do |el|
-        [el.dtstart, el.summary]
-      end
-    end
-
-    # load events for month view
-    def self.get_month_events(calendar_adress, from, to)
+    def self.get_events(calendar_adress, from, to, view)
       events = parse_calendar(calendar_adress, from, to)
 
-      sorted_events = (events).sort_by do |el|
-        [el.dtstart, el.summary]
+      if view == :month
+        sorted_events = (events).sort_by do |el|
+          [el.dtstart, el.summary]
+        end
+      elsif view == :agenda
+        spreaded_events = spread_multiday_events(events, from, to)
+
+        sorted_events = (events + spreaded_events.to_a).sort_by do |el|
+          [el.dtstart, el.summary]
+        end
+      else
+        raise `Unknown view type: #{view}`
       end
     end
 

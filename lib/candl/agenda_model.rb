@@ -111,7 +111,7 @@ module Candl
     def agenda_events(from, to)
       begin        
         calendar_adress = { path: google_calendar_base_path, id: calendar_id, key: api_key }
-        events = EventLoaderModel.get_agenda_events(calendar_adress, from, to)
+        events = EventLoaderModel.get_events(calendar_adress, from, to, :agenda)
         self.initialization_successful = true
       rescue => exception
         logger.error "ERROR: #{exception}"

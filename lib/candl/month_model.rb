@@ -174,7 +174,7 @@ module Candl
     def get_month_events(from, to)
       begin
         calendar_adress = { path: google_calendar_base_path, id: calendar_id, key: api_key }
-        events = EventLoaderModel.get_month_events(calendar_adress, from, to)
+        events = EventLoaderModel.get_events(calendar_adress, from, to, :month)
         self.initialization_successful = true
       rescue => exception
         logger.error "ERROR: #{exception}"
