@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    candl (0.1.16)
+    candl (0.1.17)
       coffee-rails (~> 4.2, >= 4.2.0)
       rails (~> 5.2, >= 5.2.0)
       rails_autolink (~> 1.1, >= 1.1.0)
