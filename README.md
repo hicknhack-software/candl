@@ -5,7 +5,7 @@
 [![Gem Version](https://badge.fury.io/rb/candl.svg)](https://badge.fury.io/rb/candl)
 
 This gem helps load and display a calendar from google calendar in an agenda or month style view.
-See here for an example: [HicknHack IT-Kalender](https://www.hicknhack-software.com/it-events)
+See an example here: [HicknHack IT-Kalender](https://www.hicknhack-software.com/it-events)
 
 ## Overview
 
