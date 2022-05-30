@@ -102,7 +102,7 @@ module Candl
 
     # build a short event summary (for popups etc.)
     def self.summary_title(event)
-      event.summary.to_s.force_encoding("UTF-8") + "\n" + event.location.to_s.force_encoding("UTF-8") + "\n" + event.description.to_s.force_encoding("UTF-8")
+      [event.summary.to_s, event.location.to_s, event.description.to_s].join('\n').force_encoding("UTF-8")
     end
 
     # build a google maps path from the  adress details
@@ -114,7 +114,7 @@ module Candl
 
     # # load events for agenda view
     # def agenda_events(from, to)
-    #   begin        
+    #   begin
     #     calendar_adress = { path: google_calendar_base_path, id: calendar_id, key: api_key }
     #     events = EventLoaderModel.get_events(calendar_adress, from, to, :agenda)
     #     self.initialization_successful = true

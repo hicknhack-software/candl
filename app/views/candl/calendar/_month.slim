@@ -41,7 +41,7 @@ table.table.table-bordered.month_view
                     .snowflake_popover[data-placement="bottom" data-toggle="popover" data-container="body" type="button" data-html="true" href="#"]
 
                       div
-                        span.summary.breakable{ title = Candl::MonthModel.summary_title(current_event) } == current_event.summary.to_s.force_encoding("UTF-8").truncate(calendar_month.summary_teaser_length().to_i, seperator: ' ')
+                        span.summary.breakable{ title = Candl::MonthModel.summary_title(current_event) } == (+current_event.summary.to_s).force_encoding("UTF-8").truncate(calendar_month.summary_teaser_length().to_i, seperator: ' ')
 
                       .popover_content.hide
                         .close_span
@@ -51,7 +51,7 @@ table.table.table-bordered.month_view
                         .summary title='Zusammenfassung'
                           .text
                             i.material-icons.icon_spacing subject
-                            .breakable = current_event.summary.to_s.force_encoding('UTF-8')
+                            .breakable = (+current_event.summary.to_s).force_encoding('UTF-8')
                         hr
 
                         .from_to title='Zeitraum'
@@ -65,14 +65,14 @@ table.table.table-bordered.month_view
                             .text
                               i.material-icons.icon_spacing location_on
                               a href=calendar_month.address_to_maps_path(current_event.location.to_s).force_encoding('UTF-8') target='_blank'
-                                .flex_wrap_it.breakable = current_event.location.to_s.force_encoding('UTF-8')
+                                .flex_wrap_it.breakable = (+current_event.location.to_s).force_encoding('UTF-8')
                           hr
 
                         - if !current_event.description.to_s.strip.empty?
                           .description title='Weitere Beschreibung'
                             .text
                               i.material-icons.icon_spacing description
-                              .flex_wrap_it.breakable = auto_link(current_event.description.to_s.force_encoding("UTF-8"), html: { target: '_blank' })
+                              .flex_wrap_it.breakable = auto_link((+current_event.description.to_s).force_encoding("UTF-8"), html: { target: '_blank' })
             - else
               td
 
@@ -91,7 +91,7 @@ table.table.table-bordered.month_view
 
                     div
                       span.time = event.dtstart.localtime.strftime('%k:%M')
-                      span.summary.breakable{ title = Candl::MonthModel.summary_title(event) } == event.summary.to_s.force_encoding("UTF-8").truncate(calendar_month.summary_teaser_length.to_i, seperator: ' ')
+                      span.summary.breakable{ title = Candl::MonthModel.summary_title(event) } == (+event.summary.to_s).force_encoding("UTF-8").truncate(calendar_month.summary_teaser_length.to_i, seperator: ' ')
 
                     .popover_content.hide
                       .close_span
@@ -101,7 +101,7 @@ table.table.table-bordered.month_view
                       .summary title='Zusammenfassung'
                         .text
                           i.material-icons.icon_spacing subject
-                          .breakable = event.summary.to_s.force_encoding('UTF-8')
+                          .breakable = (+event.summary.to_s).force_encoding('UTF-8')
                       hr
 
                       .from_to title='Zeitraum'
@@ -116,7 +116,7 @@ table.table.table-bordered.month_view
                             .icon_spacing
                               i.material-icons location_on
                             a href=calendar_month.address_to_maps_path(event.location.to_s).force_encoding('UTF-8') target='_blank'
-                              .flex_wrap_it.breakable = event.location.to_s.force_encoding('UTF-8')
+                              .flex_wrap_it.breakable = (+event.location.to_s).force_encoding('UTF-8')
 
                       - if !event.description.to_s.strip.empty?
                         hr
@@ -124,4 +124,3 @@ table.table.table-bordered.month_view
                           .text
                             i.material-icons.icon_spacing description
                             .flex_wrap_it.breakable = auto_link(event.description.to_s.force_encoding("UTF-8"), html: { target: '_blank' })
-

@@ -11,7 +11,7 @@
               span.time = event.dtstart.localtime.strftime('%k:%M')
             - else
               span.time &#9654;
-            span.flex_wrap_it.breakable.summary{ title = Candl::AgendaModel.summary_title(event) } == event.summary.to_s.force_encoding("UTF-8")
+            span.flex_wrap_it.breakable.summary{ title = Candl::AgendaModel.summary_title(event) } == (+event.summary.to_s).force_encoding("UTF-8")
             i class="material-icons auto_margin_left" arrow_drop_down
 
         .details style="display: none;"
@@ -21,7 +21,7 @@
                 i class="material-icons" date_range
               span.content
                 - if event.dtstart.instance_of?(DateTime)
-                  - if event.dtstart.to_date != event.dtend.to_date 
+                  - if event.dtstart.to_date != event.dtend.to_date
                     = l(event.dtstart.localtime, format: :short) + " - " + l(event.dtend.localtime, format: :short)
                   - else
                     = l(event.dtstart.localtime, format: :short) + " - " + l(event.dtend.localtime, format: :hnh_short)
@@ -35,7 +35,7 @@
                   i class="material-icons" location_on
                 span.content
                   a href=calendar_agenda.address_to_maps_path(event.location.to_s) target="_blank"
-                    .flex_wrap_it.breakable = event.location.to_s.force_encoding("UTF-8")
+                    .flex_wrap_it.breakable = (+event.location.to_s).force_encoding("UTF-8")
 
           - if !event.description.to_s.strip.empty?
           .description title="Weitere Beschreibung"
@@ -43,5 +43,4 @@
               span.icon
                 i class="material-icons" description
               span.content
-                .flex_wrap_it.breakable = auto_link(event.description.to_s.force_encoding("UTF-8"), html: { target: '_blank' })
-
+                .flex_wrap_it.breakable = auto_link((+event.description.to_s).force_encoding("UTF-8"), html: { target: '_blank' })
