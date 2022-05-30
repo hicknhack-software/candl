@@ -1,0 +1,16 @@
+version: "3.7"
+
+volumes:
+  bundle:
+
+services:
+  app:
+    image: alpinelab/ruby-dev:2.7.6
+    volumes:
+      - .:/app
+      - bundle:/bundle
+    tty: true
+    command: rspec
+    environment:
+      RAILS_ENV: development
+      BUNDLER_VERSION: 2.3.5
