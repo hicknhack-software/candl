@@ -3,6 +3,7 @@ module Candl
     # Attributes one needs to access from the "outside"
     attr_reader :initialization_successful
 
+    attr_reader :today_date
     attr_reader :display_day_count
     attr_reader :days_shift_coefficient
 
@@ -40,11 +41,12 @@ module Candl
       self.maps_query_host = config[:general][:maps_query_host] ||= "https://www.google.de/maps"
       self.maps_query_parameter = config[:general][:maps_query_parameter] ||= "q"
 
-      from = current_start_date(current_shift_factor, date_today)
-      to = current_end_date(current_shift_factor, date_today)
+      @today_date = date_today
+      from = current_start_date(current_shift_factor)
+      to = current_end_date(current_shift_factor)
 
-      calendar_adress = { path: google_calendar_base_path, id: calendar_id, key: api_key }
-      result = EventLoaderModel.get_events(calendar_adress, from, to, :agenda)
+      calendar_address = { path: google_calendar_base_path, id: calendar_id, key: api_key }
+      result = EventLoaderModel.get_events(calendar_address, from, to, :agenda)
 
       events = result[:events]
       self.initialization_successful = result[:success]
@@ -76,9 +78,9 @@ module Candl
     end
 
     # current shift factor for switching between calendar views from agenda to month
-    def current_shift_for_month(current_shift_factor, today_date = Date.today)
-      date_span = (current_end_date(current_shift_factor, today_date) - current_start_date(current_shift_factor, today_date)).to_i
-      midway_date = (current_start_date(current_shift_factor, today_date) + (date_span / 2))
+    def current_shift_for_month(current_shift_factor)
+      date_span = (current_end_date(current_shift_factor) - current_start_date(current_shift_factor)).to_i
+      midway_date = (current_start_date(current_shift_factor) + (date_span / 2))
 
       current_month_shift = ((midway_date.year * 12 + midway_date.month) - (today_date.year * 12 + today_date.month)).to_i
 
@@ -86,12 +88,12 @@ module Candl
     end
 
     # date of current start day of agenda
-    def current_start_date(current_shift_factor, today_date = Date.today)
+    def current_start_date(current_shift_factor)
       today_date + (current_shift_factor.to_i * days_shift_coefficient).days
     end
 
     # date of current end day of agenda
-    def current_end_date(current_shift_factor, today_date = Date.today)
+    def current_end_date(current_shift_factor)
       today_date + (current_shift_factor.to_i * days_shift_coefficient + display_day_count).days
     end
 
@@ -102,12 +104,12 @@ module Candl
 
     # build a short event summary (for popups etc.)
     def self.summary_title(event)
-      [event.summary.to_s, event.location.to_s, event.description.to_s].join('\n').force_encoding("UTF-8")
+      [event.summary, event.location, event.description].join('\n')
     end
 
-    # build a google maps path from the  adress details
+    # build a google maps path from the  address details
     def address_to_maps_path(address)
-      ActionDispatch::Http::URL.path_for path: maps_query_host, params: Hash[maps_query_parameter.to_s, address.force_encoding("UTF-8").gsub(" ", "+")]
+      ActionDispatch::Http::URL.path_for path: maps_query_host, params: Hash[maps_query_parameter.to_s, address.gsub(" ", "+")]
     end
 
     private
@@ -115,8 +117,8 @@ module Candl
     # # load events for agenda view
     # def agenda_events(from, to)
     #   begin
-    #     calendar_adress = { path: google_calendar_base_path, id: calendar_id, key: api_key }
-    #     events = EventLoaderModel.get_events(calendar_adress, from, to, :agenda)
+    #     calendar_address = { path: google_calendar_base_path, id: calendar_id, key: api_key }
+    #     events = EventLoaderModel.get_events(calendar_address, from, to, :agenda)
     #     self.initialization_successful = true
     #   rescue => exception
     #     logger.error "ERROR: #{exception}"

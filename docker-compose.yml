@@ -6,6 +6,7 @@ volumes:
 services:
   app:
     image: alpinelab/ruby-dev:2.7.6
+
     volumes:
       - .:/app
       - bundle:/bundle
@@ -14,3 +15,6 @@ services:
     environment:
       RAILS_ENV: development
       BUNDLER_VERSION: 2.3.5
+
+# to run dummy rails app use:
+# docker-compose run --rm -p 5000:5000 -w /app/spec/dummy app rails s -b 0.0.0.0 -p 5000

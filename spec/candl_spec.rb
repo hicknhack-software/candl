@@ -47,8 +47,8 @@ RSpec.describe Candl::EventLoaderModel do
     let(:current_shift_factor) { 0 }
     let(:fake_today) { Date.parse("2019-01-07") }
     let(:agenda) { Candl::AgendaModel.new(test_config, current_shift_factor, fake_today) }
-    let(:current_start_date) { agenda.current_start_date(current_shift_factor, fake_today) }
-    let(:current_end_date) { agenda.current_end_date(current_shift_factor, fake_today) }
+    let(:current_start_date) { agenda.current_start_date(current_shift_factor) }
+    let(:current_end_date) { agenda.current_end_date(current_shift_factor) }
 
     let(:unspread_event_1) { Candl::EventLoaderModel::Event.new(DateTime.parse("2019-01-08T17:00:00"), DateTime.parse("2019-01-08T19:30:00"), "summary_1", "description_1", "location_1", "uid_1") }
     let(:unspread_event_2) { Candl::EventLoaderModel::Event.new(Date.parse("2019-01-08"), Date.parse("2019-01-11"), "summary_2", "description_2", "location_2", "uid_2") }
@@ -67,8 +67,8 @@ RSpec.describe Candl::EventLoaderModel do
     let(:from) { Date.parse("2019-01-01") }
     let(:to) { Date.parse("2019-01-31") }
     it "Build google request path" do
-      calendar_adress = { path: google_base_path, id: calendar_id, key: api_key }
-      expect(Candl::EventLoaderModel.build_google_request_path(calendar_adress, from, to)).to eq("#{google_base_path}#{calendar_id}/events?key=#{api_key}&singleEvents=true&orderBy=startTime&timeMin=#{from}&timeMax=#{to}")
+      calendar_address = { path: google_base_path, id: calendar_id, key: api_key }
+      expect(Candl::EventLoaderModel.build_google_request_path(calendar_address, from, to)).to eq("#{google_base_path}#{calendar_id}/events?key=#{api_key}&singleEvents=true&orderBy=startTime&timeMin=#{from}&timeMax=#{to}")
     end
   end
 end
@@ -100,7 +100,8 @@ RSpec.describe Candl::AgendaModel do
       expect(agenda.current_shift_for_agenda(123)).to eq(123)
     end
     it "current shift for month" do
-      expect(agenda.current_shift_for_month(4, Date.parse("2019-01-08"))).to eq(1)
+      agenda2 = Candl::AgendaModel.new(test_config, current_shift_factor, Date.parse("2019-01-08"))
+      expect(agenda2.current_shift_for_month(4)).to eq(1)
     end
     it "emphasized date" do
       expect(Candl::AgendaModel.emphasize_date(Date.parse("2019-01-08"), Date.parse("2019-01-08"), "emphasized", "regular")).to eq("emphasized")
@@ -111,23 +112,22 @@ RSpec.describe Candl::AgendaModel do
   end
 
   context "Start and end dates" do
+    today = Date.parse("2019-01-11")
+    let(:agenda) { Candl::AgendaModel.new(test_config, current_shift_factor, today) }
     it "current start date 0 today" do
       shift_factor = 0
-      today = Date.parse("2019-01-11")
       current_start_date = today
-      expect(agenda.current_start_date(shift_factor, today)).to eq(current_start_date)
+      expect(agenda.current_start_date(shift_factor)).to eq(current_start_date)
     end
     it "current start date -1 today -day_shift_coefficient" do
       shift_factor = -1
-      today = Date.parse("2019-01-11")
       current_start_date = Date.parse("2019-01-11") + (shift_factor * agenda.days_shift_coefficient).days
-      expect(agenda.current_start_date(shift_factor, today)).to eq(current_start_date)
+      expect(agenda.current_start_date(shift_factor)).to eq(current_start_date)
     end
     it "current end date 0 today +length" do
       shift_factor = 0
-      today = Date.parse("2019-01-11")
       current_end_date = Date.parse("2019-01-11") + (shift_factor * agenda.days_shift_coefficient + agenda.display_day_count).days
-      expect(agenda.current_end_date(shift_factor, today)).to eq(current_end_date)
+      expect(agenda.current_end_date(shift_factor)).to eq(current_end_date)
     end
   end
 
@@ -139,7 +139,7 @@ RSpec.describe Candl::AgendaModel do
     let(:month) { Candl::MonthModel.new(test_config, current_shift_factor, fake_today) }
     let(:months_view_dates) { month.generate_months_view_dates(date_month_start, date_month_end) }
 
-    let(:events) { EventLoaderModel.get_events(calendar_adress, view_dates.first, view_dates.last, :month)[:events] }
+    let(:events) { EventLoaderModel.get_events(calendar_address, view_dates.first, view_dates.last, :month)[:events] }
 
     let(:test_range_in_month) { 13 }
     it "month(agenda(month)) ?= month" do
@@ -174,7 +174,7 @@ RSpec.describe Candl::MonthModel do
     let(:event_heap) {
       [ Candl::EventLoaderModel::Event.new(Date.parse("2019-01-04"), Date.parse("2019-01-11"), "s_1", "d_1", "l_1", "u_1"),
         Candl::EventLoaderModel::Event.new(DateTime.parse("2019-01-06T10:00:00"), DateTime.parse("2019-01-12T18:30:00"), "s_5", "d_5", "l_5", "u_5"),
-        Candl::EventLoaderModel::Event.new(Date.parse("2019-01-08"), Date.parse("2019-01-09"), "s_2", "d_2", "l_2", "u_2"),        
+        Candl::EventLoaderModel::Event.new(Date.parse("2019-01-08"), Date.parse("2019-01-09"), "s_2", "d_2", "l_2", "u_2"),
         Candl::EventLoaderModel::Event.new(Date.parse("2019-01-08"), Date.parse("2019-01-10"), "s_3", "d_3", "l_3", "u_3"),
         Candl::EventLoaderModel::Event.new(Date.parse("2019-01-09"), Date.parse("2019-01-11"), "s_4", "d_4", "l_4", "u_4")] }
 
@@ -223,7 +223,7 @@ RSpec.describe Candl::MonthModel do
 
     let(:weekday_dates_of_date_today) { [Date.parse("2019-01-07"), Date.parse("2019-01-08"), Date.parse("2019-01-09"), Date.parse("2019-01-10"), Date.parse("2019-01-11"), Date.parse("2019-01-12"), Date.parse("2019-01-13")] }
     it "weekday dates" do
-      expect(month.weekday_dates(fake_today)).to eq(weekday_dates_of_date_today)
+      expect(month.weekday_dates).to eq(weekday_dates_of_date_today)
     end
 
     let(:date_month_start) { Date.parse("2019-01-01") }

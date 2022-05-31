@@ -6,6 +6,7 @@ module Candl
     attr_reader :delta_start_of_weekday_from_sunday
     attr_reader :summary_teaser_length
 
+    attr_reader :today_date
     attr_reader :view_dates
     attr_reader :grouped_events
     attr_reader :grouped_multiday_events
@@ -43,13 +44,14 @@ module Candl
       self.maps_query_host = config[:general][:maps_query_host]
       self.maps_query_parameter = config[:general][:maps_query_parameter]
 
-      date_month_start = MonthModel.current_month_start(current_shift_factor, date_today)
-      date_month_end = MonthModel.current_month_end(current_shift_factor, date_today)
+      @today_date = date_today
+      date_month_start = MonthModel.current_month_start(current_shift_factor, today_date)
+      date_month_end = MonthModel.current_month_end(current_shift_factor, today_date)
 
       self.view_dates = generate_months_view_dates(date_month_start, date_month_end)
 
-      calendar_adress = { path: google_calendar_base_path, id: calendar_id, key: api_key }
-      result = EventLoaderModel.get_events(calendar_adress, view_dates.first, view_dates.last, :month)
+      calendar_address = { path: google_calendar_base_path, id: calendar_id, key: api_key }
+      result = EventLoaderModel.get_events(calendar_address, view_dates.first, view_dates.last, :month)
 
       events = result[:events]
       self.initialization_successful = result[:success]
@@ -86,14 +88,8 @@ module Candl
 
     # current shift factor for switching between calendar views from month to agenda
     def current_shift_for_agenda(current_shift_factor)
-      today_date = Date.today
-      current_shift_in_days = (MonthModel.current_month_start(current_shift_factor, today_date) - today_date).to_i
-
       current_shift_in_days = (MonthModel.current_month_start(current_shift_factor, today_date) + ((MonthModel.current_month_end(current_shift_factor, today_date) - MonthModel.current_month_start(current_shift_factor, today_date)).div 5) - today_date).to_i
-
-      current_shift_factor_for_agenda = (current_shift_in_days.div days_shift_coefficient)
-
-      current_shift_factor_for_agenda
+      (current_shift_in_days.div days_shift_coefficient)
     end
 
     # current shift factor for switching between calendar views from month to month
@@ -121,16 +117,16 @@ module Candl
 
     # build a short event summary (for popups etc.)
     def self.summary_title(event)
-      [event.summary.to_s, event.location.to_s, event.description.to_s].join('\n').force_encoding("UTF-8")
+      [event.summary, event.location, event.description].join('\n')
     end
 
-    # build a google maps path from the adress details
+    # build a google maps path from the address details
     def address_to_maps_path(address)
-      ActionDispatch::Http::URL.path_for path: maps_query_host, params: Hash[maps_query_parameter.to_s, address.force_encoding("UTF-8").gsub(" ", "+")]
+      ActionDispatch::Http::URL.path_for path: maps_query_host, params: Hash[maps_query_parameter.to_s, address.gsub(" ", "+")]
     end
 
     # will generate the dates of a whole week around the date given (starting from the configured day)
-    def weekday_dates(today_date = Date.today)
+    def weekday_dates
       weekdays_dates = []
       first_day_of_week = today_date - (today_date.wday - delta_start_of_weekday_from_sunday)
       7.times do |day|
@@ -177,8 +173,8 @@ module Candl
     # # gets events of all kinds for the timeframe [form, to]
     # def get_month_events(from, to)
     #   begin
-    #     calendar_adress = { path: google_calendar_base_path, id: calendar_id, key: api_key }
-    #     events = EventLoaderModel.get_events(calendar_adress, from, to, :month)
+    #     calendar_address = { path: google_calendar_base_path, id: calendar_id, key: api_key }
+    #     events = EventLoaderModel.get_events(calendar_address, from, to, :month)
     #     self.initialization_successful = true
     #   rescue => exception
     #     logger.error "ERROR: #{exception}"

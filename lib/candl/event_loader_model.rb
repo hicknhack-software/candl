@@ -4,11 +4,11 @@ require 'uri'
 module Candl
   class EventLoaderModel
     Event ||= Struct.new(:dtstart, :dtend, :summary, :description, :location, :uid)
-    
+
     # load events prepared for agenda view
-    def self.get_events(calendar_adress, from, to, view)
+    def self.get_events(calendar_address, from, to, view)
       begin
-        events = parse_calendar(calendar_adress, from, to)
+        events = parse_calendar(calendar_address, from, to)
         initialization_successful = true
       rescue => exception
         logger.error "ERROR: #{exception}"
@@ -35,13 +35,13 @@ module Candl
     private
 
     # build request path to calendar host (google calendar)
-    def self.build_google_request_path(calendar_adress, from, to)
-      google_test_path = "#{calendar_adress[:path]}#{calendar_adress[:id]}/events?key=#{calendar_adress[:key]}&singleEvents=true&orderBy=startTime&timeMin=#{CGI.escape(from.to_s)}&timeMax=#{CGI.escape(to.to_s)}"
+    def self.build_google_request_path(calendar_address, from, to)
+      google_test_path = "#{calendar_address[:path]}#{calendar_address[:id]}/events?key=#{calendar_address[:key]}&singleEvents=true&orderBy=startTime&timeMin=#{CGI.escape(from.to_s)}&timeMax=#{CGI.escape(to.to_s)}"
     end
 
     # parses json response form calendar host (google calendar)
-    def self.parse_calendar(calendar_adress, from, to)
-      google_test_path = build_google_request_path(calendar_adress, from.to_datetime, to.to_datetime)
+    def self.parse_calendar(calendar_address, from, to)
+      google_test_path = build_google_request_path(calendar_address, from.to_datetime, to.to_datetime)
 
       requested_events = JSON.parse(Net::HTTP.get(URI.parse(google_test_path)))
 

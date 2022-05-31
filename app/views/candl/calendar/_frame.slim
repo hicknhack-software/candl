@@ -10,7 +10,7 @@
 - else
   - model = Rails.cache.fetch("#agenda/#{current_shift_factor}/#{date_today}", expires_in: update_interval) do
     - Candl::AgendaModel.new(config, current_shift_factor, date_today)
-  
+
 - if model.initialization_successful
   .popover_backdrop.init_display_none
 
@@ -18,7 +18,6 @@
     .button_holder
       .btn-group
         = link_to "Monat", model.path("", v: :m, s: model.current_shift_for_month(current_shift_factor)), class: "btn btn-default button_item #{'active' if is_month}"
-
         = link_to "Agenda", model.path("", v: :a, s: model.current_shift_for_agenda(current_shift_factor)), class: "btn btn-default button_item #{'active' unless is_month}"
 
       .btn-group
@@ -26,12 +25,9 @@
 
       .btn-group
         = link_to model.previous_path("", current_shift_factor), class: "btn btn-default button_item debounce_this", data: { debounce_param: "s", direction_forward: false }
-          .button_icon
-            i.material-icons navigate_before
-
+          .button_icon: i.material-icons navigate_before
         = link_to model.upcoming_path("", current_shift_factor), class: "btn btn-default button_item debounce_this", data: { debounce_param: "s", direction_forward: true }
-          .button_icon
-            i.material-icons navigate_next
+          .button_icon: i.material-icons navigate_next
 
     .calendar
       - if is_month

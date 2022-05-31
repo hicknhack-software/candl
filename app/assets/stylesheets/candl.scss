@@ -70,12 +70,11 @@ $hnh-size-humongus: 8rem;
 
   .row_head {
     color: $hnh-color-black;
-    
+
     padding: $hnh-size-small;
   }
 
   .event_shell {
-    background-color: lighten($hnh-color-light-gray, 4%);
     color: darken($hnh-color-blue, 7%);
     transition: background-color 0.33s;
     cursor: pointer;
@@ -98,7 +97,7 @@ $hnh-size-humongus: 8rem;
         margin-right: 1px;
       }
       &:hover {
-        background-color: darken($hnh-color-light-gray, 3%);
+        background-color: $hnh-color-light-gray;
       }
     }
 
@@ -122,22 +121,46 @@ $hnh-size-humongus: 8rem;
         }
       }
     }
+    &.past {
+      opacity: 0.6;
+      &:hover {
+        opacity: 1;
+      }
+    }
     &:nth-child(odd) {
       color: darken($hnh-color-green, 7%);
     }
   }
 }
 
-.month_view {
+.table.month_view {
   table-layout: fixed;
+
+  &>tbody>tr>td {
+    border-top: none;
+    border-left: solid 1px #ddd;
+    border-right: solid 1px #ddd;
+  }
+  th {
+    border-left: solid 1px #ddd;
+    border-right: solid 1px #ddd;
+  }
+  tr:last-child>td {
+    border-bottom: solid 1px #ddd;
+  }
 
   .weekday_name_header {
     overflow: hidden;
+    text-align: center;
   }
 
-  .day_row {
+  tbody>tr.day_row {
     background-color: lighten($hnh-color-light-gray, 4%);
 
+    &>td {
+      border-top: solid 1px #ddd;
+      border-bottom: solid 1px #ddd;
+    }
     .day_head {
       width: 100%;
       text-align: center;
@@ -152,7 +175,7 @@ $hnh-size-humongus: 8rem;
     padding: $hnh-size-micro;
     overflow: hidden;
     cursor: pointer;
-  
+
     border-radius: $hnh-size-small;
     border: $hnh-size-micro solid $hnh-color-light-gray;
     background-color: lighten($hnh-color-blue, 42%);
@@ -163,6 +186,9 @@ $hnh-size-humongus: 8rem;
     .summary {
       margin-left: $hnh-size-small;
       color: $hnh-color-black;
+    }
+    &.past {
+      opacity: 0.6;
     }
     &:nth-child(odd) {
       background-color: lighten($hnh-color-green, 42%);
@@ -201,21 +227,24 @@ $hnh-size-humongus: 8rem;
       overflow: hidden;
       margin-bottom: $hnh-size-small;
       cursor: pointer;
-    
+
       border-radius: $hnh-size-small;
       border: $hnh-size-micro solid $hnh-color-light-gray;
       background-color: lighten($hnh-color-blue, 42%);
       border: 1px solid lighten($hnh-color-blue, 29%);
-  
+
       transition: background-color 0.33s;
-  
+
       .time {
         font-weight: bold;
       }
-      
+
       .summary {
         margin-left: $hnh-size-small;
         color: $hnh-color-black;
+      }
+      &.past {
+        opacity: 0.6;
       }
       &:nth-child(odd) {
         background-color: lighten($hnh-color-green, 42%);
@@ -224,7 +253,7 @@ $hnh-size-humongus: 8rem;
       &:hover {
         background-color: lighten($hnh-color-blue, 33%);
         border: 1px solid lighten($hnh-color-blue, 15%);
-  
+
         &:nth-child(odd) {
           background-color: lighten($hnh-color-green, 33%);
           border: 1px solid lighten($hnh-color-green, 15%);
@@ -259,7 +288,7 @@ $hnh-size-humongus: 8rem;
 
   .close_span {
     width: 100%;
-  
+
     .close {
       text-align: right;
       cursor: pointer;
@@ -278,7 +307,7 @@ $hnh-size-humongus: 8rem;
 
     display: flex;
     align-items: center;
-    
+
     .flex_wrap_it {
       flex-wrap: wrap;
     }
